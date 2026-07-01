@@ -1,0 +1,280 @@
+const INITIAL_DB = {
+    system_users: [
+        { id: 'u1', thana_name: 'Kotwali Nagar', nic_email: 'sho-kotnagar.ay@up.gov.in', cug_mobile: '9454403303', role: 'thana_user', is_active: true },
+        { id: 'u2', thana_name: 'Kotwali Cantt', nic_email: 'sho-cantt.ay@up.gov.in', cug_mobile: '9454403298', role: 'thana_user', is_active: true },
+        { id: 'u3', thana_name: 'Cyber Thana', nic_email: 'sho-cybercrime.ay@up.gov.in', cug_mobile: '7839876653', role: 'admin', is_active: true },
+        { id: 'u4', thana_name: 'Kotwali Ayodhya', nic_email: 'sho-kotayodhya.ay@up.gov.in', cug_mobile: '9454403296', role: 'thana_user', is_active: true },
+        { id: 'u5', thana_name: 'Ram Janm Bhoomi', nic_email: 'sho-rjb.ay@up.gov.in', cug_mobile: '9454403310', role: 'thana_user', is_active: true },
+        { id: 'u6', thana_name: 'Poorakalandar', nic_email: 'sho-purakalander.ay@up.gov.in', cug_mobile: '9454403309', role: 'thana_user', is_active: true },
+        { id: 'u7', thana_name: 'Raunahi', nic_email: 'sho-raunahi.ay@up.gov.in', cug_mobile: '9454403311', role: 'thana_user', is_active: true },
+        { id: 'u8', thana_name: 'Maharajganj', nic_email: 'sho-mahrajganj.ay@up.gov.in', cug_mobile: '9454403305', role: 'thana_user', is_active: true },
+        { id: 'u9', thana_name: 'Gosainganj', nic_email: 'sho-gosaiganj.ay@up.gov.in', cug_mobile: '9454403299', role: 'thana_user', is_active: true },
+        { id: 'u10', thana_name: 'Kotwali Bikapur', nic_email: 'sho-kotbikapur.ay@up.gov.in', cug_mobile: '9454403297', role: 'thana_user', is_active: true },
+        { id: 'u11', thana_name: 'Tarun', nic_email: 'sho-tarun.ay@up.gov.in', cug_mobile: '9454403313', role: 'thana_user', is_active: true },
+        { id: 'u12', thana_name: 'Haiderganj', nic_email: 'sho-haiderganj.ay@up.gov.in', cug_mobile: '9454403300', role: 'thana_user', is_active: true },
+        { id: 'u13', thana_name: 'Kotwali Inayat Nagar', nic_email: 'sho-inshotnagar.ay@up.gov.in', cug_mobile: '9454403301', role: 'thana_user', is_active: true },
+        { id: 'u14', thana_name: 'Kumarganj', nic_email: 'sho-kumarganj.ay@up.gov.in', cug_mobile: '9454403304', role: 'thana_user', is_active: true },
+        { id: 'u15', thana_name: 'Khandasa', nic_email: 'sho-khandasa.ay@up.gov.in', cug_mobile: '9454403302', role: 'thana_user', is_active: true },
+        { id: 'u16', thana_name: 'Kotwali Rudauli', nic_email: 'sho-kotrudauli.ay@up.gov.in', cug_mobile: '9454403312', role: 'thana_user', is_active: true },
+        { id: 'u17', thana_name: 'Mawai', nic_email: 'sho-mawai.ay@up.gov.in', cug_mobile: '9454403307', role: 'thana_user', is_active: true },
+        { id: 'u18', thana_name: 'Patranga', nic_email: 'patarangafzd@gmail.com', cug_mobile: '9454403308', role: 'thana_user', is_active: true },
+        { id: 'u19', thana_name: 'Baba Bazar', nic_email: 'sho-bababazar.ay@up.gov.in', cug_mobile: '9454403314', role: 'thana_user', is_active: true },
+        { id: 'u_superadmin', thana_name: 'Cyber Cell HQ', nic_email: 'superadmin@up.nic.in', cug_mobile: '9999999999', role: 'super_admin', is_active: true }
+    ],
+    verified_hotels: [
+        { id: 'h1', hotel_name: 'Ramayana Hotel', official_url: 'https://ramayanahotel-ayodhya.in', email: 'bookings@ramayanahotel-ayodhya.in', whatsapp_number: '+91 9900887766', gst_number: '09GST12345', police_verification: 'PV-9921-KOTWALI', thana_id: 'u1', status: 'Active' },
+        { id: 'h2', hotel_name: 'Ayodhya Palace', official_url: 'https://ayodhyapalace-official.org', email: 'contact@ayodhyapalace.org', whatsapp_number: '+91 8877665544', gst_number: '09GST67890', police_verification: 'PV-8832-KOTWALI', thana_id: 'u2', status: 'Active' },
+        { id: 'h3', hotel_name: 'Oudh Inn', official_url: 'https://oudhinn.in', email: 'support@oudhinn.in', whatsapp_number: '+91 7766554433', gst_number: '09GST11223', police_verification: 'PV-7712-KOTWALI', thana_id: 'u1', status: 'Active' }
+    ],
+    suspicious_links: [
+        { id: '1', fake_url: 'https://ramayana-booking-fake.com', target_hotel_id: 'h1', status: 'Active', detected_on: new Date(Date.now() - 3600000*2).toISOString() },
+        { id: '2', fake_url: 'https://ayodhyapalace-offers.net', target_hotel_id: 'h2', status: 'Takedown Initiated', detected_on: new Date(Date.now() - 3600000*24).toISOString() },
+        { id: '3', fake_url: 'https://book-oudh-inn.info', target_hotel_id: 'h3', status: 'Blocked', detected_on: new Date(Date.now() - 3600000*48).toISOString() }
+    ],
+    public_reports: [
+        { id: 'p1', reporter_name: 'Rohan Sharma', reported_url: 'http://fake-ramayana-booking.com', description: 'They sent me a direct payment link on whatsapp asking for full payment before checkin.', status: 'Pending', submitted_at: new Date(Date.now() - 3600000*2).toISOString() },
+        { id: 'p2', reporter_name: 'Anonymous Devotee', reported_url: 'https://ayodhyastay-discount.net', description: 'Huge discounts offered. Page templates are exact duplicates of official pages.', status: 'Reviewed', submitted_at: new Date(Date.now() - 3600000*24).toISOString() }
+    ],
+    spam_websites: []
+};
+
+function readDb() {
+    try {
+        const data = localStorage.getItem('safestay_mock_db');
+        if (!data) {
+            localStorage.setItem('safestay_mock_db', JSON.stringify(INITIAL_DB));
+            return INITIAL_DB;
+        }
+        return JSON.parse(data);
+    } catch (e) {
+        console.error("Error reading localStorage db", e);
+        return INITIAL_DB;
+    }
+}
+
+function writeDb(data) {
+    try {
+        localStorage.setItem('safestay_mock_db', JSON.stringify(data));
+    } catch (e) {
+        console.error("Error writing localStorage db", e);
+    }
+}
+
+class QueryBuilder {
+    constructor(tableName) {
+        this.tableName = tableName;
+        this.filters = [];
+        this.limitCount = null;
+        this.singleRow = false;
+        this.op = 'select';
+        this.opData = null;
+        this.selectFields = '*';
+    }
+
+    select(fields) {
+        this.selectFields = fields || '*';
+        return this;
+    }
+
+    insert(data) {
+        this.op = 'insert';
+        this.opData = data;
+        return this;
+    }
+
+    update(data) {
+        this.op = 'update';
+        this.opData = data;
+        return this;
+    }
+
+    eq(column, value) {
+        this.filters.push((row, db) => {
+            if (column.includes('.')) {
+                const [rel, col] = column.split('.');
+                const relIdField = rel === 'verified_hotels' ? 'target_hotel_id' : null;
+                if (relIdField) {
+                    const relRow = db[rel].find(r => r.id === row[relIdField]);
+                    return relRow && relRow[col] === value;
+                }
+                return false;
+            }
+            return row[column] === value;
+        });
+        return this;
+    }
+
+    or(condition) {
+        this.filters.push((row) => {
+            const parts = condition.split(',');
+            for (const part of parts) {
+                const match = part.match(/^([^.]+)\.(ilike|eq)\.(.+)$/);
+                if (match) {
+                    const [_, col, operator, val] = match;
+                    const cleanVal = val.replace(/%/g, '').toLowerCase();
+                    const rowVal = String(row[col] || '').toLowerCase();
+                    if (operator === 'ilike' && rowVal.includes(cleanVal)) {
+                        return true;
+                    }
+                    if (operator === 'eq' && rowVal === cleanVal) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        });
+        return this;
+    }
+
+    ilike(column, pattern) {
+        const cleanVal = pattern.replace(/%/g, '').toLowerCase();
+        this.filters.push((row) => {
+            const rowVal = String(row[column] || '').toLowerCase();
+            return rowVal.includes(cleanVal);
+        });
+        return this;
+    }
+
+    limit(num) {
+        this.limitCount = num;
+        return this;
+    }
+
+    single() {
+        this.singleRow = true;
+        return this;
+    }
+
+    resolveRelations(row, db) {
+        const result = { ...row };
+        if (this.tableName === 'suspicious_links') {
+            const hotel = db.verified_hotels.find(h => h.id === row.target_hotel_id);
+            if (hotel) {
+                result.verified_hotels = { ...hotel };
+            }
+        }
+        if (this.tableName === 'verified_hotels') {
+            const user = db.system_users.find(u => u.id === row.thana_id);
+            if (user) {
+                result.system_users = { ...user };
+            }
+        }
+        return result;
+    }
+
+    async then(onfulfilled, onrejected) {
+        try {
+            const db = readDb();
+            const table = db[this.tableName] || [];
+
+            if (this.op === 'select') {
+                let filtered = [...table];
+                for (const filter of this.filters) {
+                    filtered = filtered.filter(row => filter(row, db));
+                }
+                let resolved = filtered.map(row => this.resolveRelations(row, db));
+                
+                let data = resolved;
+                if (this.singleRow) {
+                    data = resolved.length > 0 ? resolved[0] : null;
+                } else if (this.limitCount !== null) {
+                    data = resolved.slice(0, this.limitCount);
+                }
+                
+                return onfulfilled({ data, error: null });
+            } 
+            
+            if (this.op === 'insert') {
+                const rowsToInsert = Array.isArray(this.opData) ? this.opData : [this.opData];
+                const insertedRows = rowsToInsert.map(row => {
+                    const newRow = {
+                        id: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
+                        created_at: new Date().toISOString(),
+                        submitted_at: new Date().toISOString(),
+                        detected_on: new Date().toISOString(),
+                        ...row
+                    };
+                    table.push(newRow);
+                    return newRow;
+                });
+                
+                db[this.tableName] = table;
+                writeDb(db);
+
+                const returnData = Array.isArray(this.opData) ? insertedRows : insertedRows[0];
+                return onfulfilled({ data: returnData, error: null });
+            }
+
+            if (this.op === 'update') {
+                let updatedCount = 0;
+                const updatedRows = [];
+                for (let i = 0; i < table.length; i++) {
+                    const row = table[i];
+                    let match = true;
+                    for (const filter of this.filters) {
+                        if (!filter(row, db)) {
+                            match = false;
+                            break;
+                        }
+                    }
+                    if (match) {
+                        table[i] = { ...row, ...this.opData };
+                        updatedRows.push(table[i]);
+                        updatedCount++;
+                    }
+                }
+                if (updatedCount > 0) {
+                    db[this.tableName] = table;
+                    writeDb(db);
+                }
+                return onfulfilled({ data: this.singleRow ? updatedRows[0] : updatedRows, error: null });
+            }
+        } catch (err) {
+            return onfulfilled({ data: null, error: err });
+        }
+    }
+}
+
+const mockSupabase = {
+    from: (tableName) => new QueryBuilder(tableName),
+    auth: {
+        signInWithPassword: async ({ email, password }) => {
+            const db = readDb();
+            const user = db.system_users.find(u => u.nic_email === email);
+            if (user) {
+                // Return dummy auth session
+                const session = {
+                    access_token: 'mock-jwt-token',
+                    user: { id: user.id, email: user.nic_email }
+                };
+                // Store user session state in localStorage
+                localStorage.setItem('safestay_session', JSON.stringify(session));
+                return { data: { user, session }, error: null };
+            }
+            return { data: null, error: { message: 'Invalid credentials. Use a seeded email (e.g. sho-kotnagar.ay@up.gov.in).' } };
+        },
+        signOut: async () => {
+            localStorage.removeItem('safestay_session');
+            return { error: null };
+        },
+        getSession: async () => {
+            const data = localStorage.getItem('safestay_session');
+            if (data) {
+                return { data: { session: JSON.parse(data) }, error: null };
+            }
+            return { data: { session: null }, error: null };
+        },
+        onAuthStateChange: (callback) => {
+            // Listeners
+            const data = localStorage.getItem('safestay_session');
+            if (data) {
+                callback('SIGNED_IN', JSON.parse(data));
+            } else {
+                callback('SIGNED_OUT', null);
+            }
+            return { data: { subscription: { unsubscribe: () => {} } } };
+        }
+    }
+};
+
+export default mockSupabase;

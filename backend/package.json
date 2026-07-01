@@ -1,0 +1,24 @@
+{
+  "name": "ayodhya-safestay-backend",
+  "version": "1.0.0",
+  "description": "Backend API for Ayodhya SafeStay",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.3",
+    "axios": "^1.17.0",
+    "cheerio": "^1.2.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "node-cron": "^3.0.3",
+    "nodemailer": "^6.9.13",
+    "twilio": "^5.0.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}

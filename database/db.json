@@ -1,0 +1,315 @@
+{
+  "system_users": [
+    {
+      "id": "u1",
+      "thana_name": "Kotwali Nagar",
+      "nic_email": "sho-kotnagar.ay@up.gov.in",
+      "cug_mobile": "9454403303",
+      "role": "thana_user",
+      "is_active": true
+    },
+    {
+      "id": "u2",
+      "thana_name": "Kotwali Cantt",
+      "nic_email": "sho-cantt.ay@up.gov.in",
+      "cug_mobile": "9454403298",
+      "role": "thana_user",
+      "is_active": true
+    },
+    {
+      "id": "u3",
+      "thana_name": "Cyber Thana",
+      "nic_email": "sho-cybercrime.ay@up.gov.in",
+      "cug_mobile": "7839876653",
+      "role": "admin",
+      "is_active": true
+    },
+    {
+      "id": "u4",
+      "thana_name": "Kotwali Ayodhya",
+      "nic_email": "sho-kotayodhya.ay@up.gov.in",
+      "cug_mobile": "9454403296",
+      "role": "thana_user",
+      "is_active": true
+    },
+    {
+      "id": "u5",
+      "thana_name": "Ram Janm Bhoomi",
+      "nic_email": "sho-rjb.ay@up.gov.in",
+      "cug_mobile": "9454403310",
+      "role": "thana_user",
+      "is_active": true
+    },
+    {
+      "id": "u6",
+      "thana_name": "Poorakalandar",
+      "nic_email": "sho-purakalander.ay@up.gov.in",
+      "cug_mobile": "9454403309",
+      "role": "thana_user",
+      "is_active": true
+    },
+    {
+      "id": "u7",
+      "thana_name": "Raunahi",
+      "nic_email": "sho-raunahi.ay@up.gov.in",
+      "cug_mobile": "9454403311",
+      "role": "thana_user",
+      "is_active": true
+    },
+    {
+      "id": "u8",
+      "thana_name": "Maharajganj",
+      "nic_email": "sho-mahrajganj.ay@up.gov.in",
+      "cug_mobile": "9454403305",
+      "role": "thana_user",
+      "is_active": true
+    },
+    {
+      "id": "u9",
+      "thana_name": "Gosainganj",
+      "nic_email": "sho-gosaiganj.ay@up.gov.in",
+      "cug_mobile": "9454403299",
+      "role": "thana_user",
+      "is_active": true
+    },
+    {
+      "id": "u10",
+      "thana_name": "Kotwali Bikapur",
+      "nic_email": "sho-kotbikapur.ay@up.gov.in",
+      "cug_mobile": "9454403297",
+      "role": "thana_user",
+      "is_active": true
+    },
+    {
+      "id": "u11",
+      "thana_name": "Tarun",
+      "nic_email": "sho-tarun.ay@up.gov.in",
+      "cug_mobile": "9454403313",
+      "role": "thana_user",
+      "is_active": true
+    },
+    {
+      "id": "u12",
+      "thana_name": "Haiderganj",
+      "nic_email": "sho-haiderganj.ay@up.gov.in",
+      "cug_mobile": "9454403300",
+      "role": "thana_user",
+      "is_active": true
+    },
+    {
+      "id": "u13",
+      "thana_name": "Kotwali Inayat Nagar",
+      "nic_email": "sho-inshotnagar.ay@up.gov.in",
+      "cug_mobile": "9454403301",
+      "role": "thana_user",
+      "is_active": true
+    },
+    {
+      "id": "u14",
+      "thana_name": "Kumarganj",
+      "nic_email": "sho-kumarganj.ay@up.gov.in",
+      "cug_mobile": "9454403304",
+      "role": "thana_user",
+      "is_active": true
+    },
+    {
+      "id": "u15",
+      "thana_name": "Khandasa",
+      "nic_email": "sho-khandasa.ay@up.gov.in",
+      "cug_mobile": "9454403302",
+      "role": "thana_user",
+      "is_active": true
+    },
+    {
+      "id": "u16",
+      "thana_name": "Kotwali Rudauli",
+      "nic_email": "sho-kotrudauli.ay@up.gov.in",
+      "cug_mobile": "9454403312",
+      "role": "thana_user",
+      "is_active": true
+    },
+    {
+      "id": "u17",
+      "thana_name": "Mawai",
+      "nic_email": "sho-mawai.ay@up.gov.in",
+      "cug_mobile": "9454403307",
+      "role": "thana_user",
+      "is_active": true
+    },
+    {
+      "id": "u18",
+      "thana_name": "Patranga",
+      "nic_email": "patarangafzd@gmail.com",
+      "cug_mobile": "9454403308",
+      "role": "thana_user",
+      "is_active": true
+    },
+    {
+      "id": "u19",
+      "thana_name": "Baba Bazar",
+      "nic_email": "sho-bababazar.ay@up.gov.in",
+      "cug_mobile": "9454403314",
+      "role": "thana_user",
+      "is_active": true
+    },
+    {
+      "id": "u_superadmin",
+      "thana_name": "Cyber Cell HQ",
+      "nic_email": "superadmin@up.nic.in",
+      "cug_mobile": "9999999999",
+      "role": "super_admin",
+      "is_active": true
+    }
+  ],
+  "verified_hotels": [
+    {
+      "id": "h1",
+      "hotel_name": "Ramayana Hotel",
+      "official_url": "https://ramayanahotel-ayodhya.in",
+      "email": "bookings@ramayanahotel-ayodhya.in",
+      "whatsapp_number": "+91 9900887766",
+      "gst_number": "09GST12345",
+      "police_verification": "PV-9921-KOTWALI",
+      "thana_id": "u1",
+      "status": "Active"
+    },
+    {
+      "id": "h2",
+      "hotel_name": "Ayodhya Palace",
+      "official_url": "https://ayodhyapalace-official.org",
+      "email": "contact@ayodhyapalace.org",
+      "whatsapp_number": "+91 8877665544",
+      "gst_number": "09GST67890",
+      "police_verification": "PV-8832-KOTWALI",
+      "thana_id": "u2",
+      "status": "Active"
+    },
+    {
+      "id": "h3",
+      "hotel_name": "Oudh Inn",
+      "official_url": "https://oudhinn.in",
+      "email": "support@oudhinn.in",
+      "whatsapp_number": "+91 7766554433",
+      "gst_number": "09GST11223",
+      "police_verification": "PV-7712-KOTWALI",
+      "thana_id": "u1",
+      "status": "Active"
+    }
+  ],
+  "suspicious_links": [
+    {
+      "id": "1",
+      "fake_url": "https://ramayana-booking-fake.com",
+      "target_hotel_id": "h1",
+      "status": "Active",
+      "detected_on": "2026-07-01T14:17:00.212Z",
+      "whois_data": {
+        "registrar": "Mock Registrar",
+        "creationDate": "2026-07-01T16:17:00.213Z"
+      }
+    },
+    {
+      "id": "2",
+      "fake_url": "https://ayodhyapalace-offers.net",
+      "target_hotel_id": "h2",
+      "status": "Takedown Initiated",
+      "detected_on": "2026-06-30T16:17:00.213Z",
+      "whois_data": {
+        "registrar": "Mock Registrar",
+        "creationDate": "2026-07-01T16:17:00.213Z"
+      }
+    },
+    {
+      "id": "3",
+      "fake_url": "https://book-oudh-inn.info",
+      "target_hotel_id": "h3",
+      "status": "Blocked",
+      "detected_on": "2026-06-29T16:17:00.213Z",
+      "whois_data": {
+        "registrar": "Mock Registrar",
+        "creationDate": "2026-07-01T16:17:00.213Z"
+      }
+    },
+    {
+      "id": "swarlybzsgord85bau8htf",
+      "created_at": "2026-07-01T16:20:00.820Z",
+      "submitted_at": "2026-07-01T16:20:00.820Z",
+      "detected_on": "2026-07-01T16:20:00.820Z",
+      "fake_url": "https://ayodhyapalace-booking-offer.com/special-deal",
+      "target_hotel_id": "h2",
+      "whois_data": {
+        "registrar": "Mock Registrar Inc.",
+        "creation_date": "2026-07-01T16:20:00.814Z",
+        "country": "Unknown"
+      },
+      "status": "Active"
+    },
+    {
+      "id": "1373fbgrzz6oywttko0py",
+      "created_at": "2026-07-01T16:22:01.101Z",
+      "submitted_at": "2026-07-01T16:22:01.102Z",
+      "detected_on": "2026-07-01T16:22:01.102Z",
+      "fake_url": "https://ramayanahotel-booking-offer.com/special-deal",
+      "target_hotel_id": "h1",
+      "whois_data": {
+        "registrar": "Mock Registrar Inc.",
+        "creation_date": "2026-07-01T16:22:01.092Z",
+        "country": "Unknown"
+      },
+      "status": "Active"
+    },
+    {
+      "id": "os818hv91yl83avvu0wk2",
+      "created_at": "2026-07-01T16:37:00.022Z",
+      "submitted_at": "2026-07-01T16:37:00.022Z",
+      "detected_on": "2026-07-01T16:37:00.022Z",
+      "fake_url": "https://oudhinn-booking-offer.com/special-deal",
+      "target_hotel_id": "h3",
+      "whois_data": {
+        "registrar": "Mock Registrar Inc.",
+        "creation_date": "2026-07-01T16:37:00.020Z",
+        "country": "Unknown"
+      },
+      "status": "Active"
+    }
+  ],
+  "public_reports": [
+    {
+      "id": "p1",
+      "reporter_name": "Rohan Sharma",
+      "reported_url": "http://fake-ramayana-booking.com",
+      "description": "They sent me a direct payment link on whatsapp asking for full payment before checkin.",
+      "status": "Pending",
+      "submitted_at": "2026-07-01T14:17:00.213Z"
+    },
+    {
+      "id": "p2",
+      "reporter_name": "Anonymous Devotee",
+      "reported_url": "https://ayodhyastay-discount.net",
+      "description": "Huge discounts offered. Page templates are exact duplicates of official pages.",
+      "status": "Reviewed",
+      "submitted_at": "2026-06-30T16:17:00.213Z"
+    },
+    {
+      "id": "hwd65cu7vt53evsfz22pzi",
+      "created_at": "2026-07-01T16:22:40.248Z",
+      "submitted_at": "2026-07-01T16:22:40.248Z",
+      "detected_on": "2026-07-01T16:22:40.248Z",
+      "reporter_name": "Test User",
+      "reported_url": "http://fake-ayodhya-hotel.com",
+      "description": "Fake booking portal requesting direct UPI payment.",
+      "status": "Pending"
+    },
+    {
+      "id": "4y933rbbe8r72g6c2inuj",
+      "created_at": "2026-07-01T16:25:21.494Z",
+      "submitted_at": "2026-07-01T16:25:21.494Z",
+      "detected_on": "2026-07-01T16:25:21.494Z",
+      "reporter_name": "Test User",
+      "reported_url": "http://fake-ayodhya-hotel.com",
+      "description": "Fake booking portal requesting direct UPI payment.",
+      "status": "Pending"
+    }
+  ],
+  "spam_websites": []
+}

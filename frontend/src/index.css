@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+body {
+  background-color: var(--color-slate-50);
+  color: var(--color-slate-900);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: 'Outfit', 'Inter', system-ui, sans-serif;
+}

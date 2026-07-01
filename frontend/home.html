@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberSecurity Platform - UpGuard Inspired</title>
+    <style>
+        /* --- CSS VARIABLES & THEMES --- */
+        :root {
+            --bg-color: #f8fafc;
+            --text-color: #0f172a;
+            --navbar-bg: #ffffff;
+            --navbar-text: #0f172a;
+            --primary-color: #0284c7;
+            --primary-hover: #0369a1;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --video-shadow: rgba(15, 23, 42, 0.08);
+            --matrix-display: none;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #0f172a;
+            --text-color: #f8fafc;
+            --navbar-bg: #1e293b;
+            --navbar-text: #f8fafc;
+            --primary-color: #38bdf8;
+            --primary-hover: #7dd3fc;
+            --card-bg: #1e293b;
+            --border-color: #334155;
+            --video-shadow: rgba(0, 0, 0, 0.5);
+            --matrix-display: none;
+        }
+
+        [data-theme="matrix"] {
+            --bg-color: #000000;
+            --text-color: #00ff41;
+            --navbar-bg: #050505;
+            --navbar-text: #00ff41;
+            --primary-color: #00ff41;
+            --primary-hover: #003300;
+            --card-bg: #0a0a0a;
+            --border-color: #00ff41;
+            --video-shadow: rgba(0, 255, 65, 0.2);
+            --matrix-display: block;
+        }
+
+        /* --- BASE STYLES --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* --- MATRIX CANVAS BACKGROUND --- */
+        #matrixCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            display: var(--matrix-display);
+            opacity: 0.25;
+        }
+
+        /* --- NAVIGATION --- */
+        header {
+            background-color: var(--navbar-bg);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--navbar-text);
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--primary-color);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--navbar-text);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            opacity: 0.8;
+        }
+
+        .nav-links a:hover {
+            opacity: 1;
+            color: var(--primary-color);
+        }
+
+        /* --- THEME MENU --- */
+        .theme-menu-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .theme-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .theme-dropdown {
+            position: absolute;
+            right: 0;
+            top: calc(100% + 8px);
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            display: none;
+            flex-direction: column;
+            min-width: 140px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .theme-dropdown.show {
+            display: flex;
+        }
+
+        .theme-opt {
+            background: transparent;
+            border: none;
+            color: var(--text-color);
+            padding: 0.75rem 1rem;
+            text-align: left;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .theme-opt:hover {
+            background-color: var(--border-color);
+            color: var(--primary-color);
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 5rem 2rem 2rem 2rem;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .tagline {
+            background-color: var(--border-color);
+            color: var(--primary-color);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 1.5rem;
+            max-width: 800px;
+        }
+
+        .typewriter-text {
+            color: var(--primary-color);
+            border-right: 3px solid var(--primary-color);
+            white-space: nowrap;
+            animation: blink 0.75s step-end infinite;
+        }
+
+        @keyframes blink {
+
+            from,
+            to {
+                border-color: transparent
+            }
+
+            50% {
+                border-color: var(--primary-color);
+            }
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            opacity: 0.7;
+            max-width: 600px;
+            margin-bottom: 2.5rem;
+            line-height: 1.6;
+        }
+
+        .cta-group {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 4rem;
+        }
+
+        .btn {
+            padding: 0.8rem 1.75rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            border: none;
+        }
+
+        [data-theme="matrix"] .btn-primary {
+            color: #000000;
+            font-weight: 800;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary-color);
+        }
+
+        /* --- EMBEDDED VIDEO SHOWCASE --- */
+        .video-showcase {
+            max-width: 1100px;
+            width: 100%;
+            margin: 0 auto 6rem auto;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            box-shadow: 0 25px 50px -12px var(--video-shadow);
+            overflow: hidden;
+            padding: 6px;
+        }
+
+        .video-showcase video {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Matrix Animation Background Canvas -->
+    <canvas id="matrixCanvas"></canvas>
+
+    <!-- Header Navigation -->
+    <header>
+        <div class="navbar">
+            <a href="#" class="logo">🛡️ Up<span>Shield</span></a>
+            <ul class="nav-links">
+                <li><a href="#">Products</a></li>
+                <li><a href="#">Solutions</a></li>
+                <li><a href="#">Pricing</a></li>
+            </ul>
+
+            <div class="theme-menu-container">
+                <button class="theme-btn" id="themeBtn">🎨 Theme ▾</button>
+                <div class="theme-dropdown" id="themeDropdown">
+                    <button class="theme-opt" data-set-theme="light">☀️ Light</button>
+                    <button class="theme-opt" data-set-theme="dark">🌙 Dark</button>
+                    <button class="theme-opt" data-set-theme="matrix">💻 Matrix</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="hero">
+        <span class="tagline">Automated Security Analysis</span>
+        <h1>
+            Monitor third-party risk & prevent <br>
+            <span class="typewriter-text" id="typewriter"></span>
+        </h1>
+        <p>UpShield continuously monitors your attack surface and vendors to stop data breaches before they take down
+            your infrastructure.</p>
+
+        <div class="cta-group">
+            <a href="#" class="btn btn-primary">Start Free Trial</a>
+            <a href="#" class="btn btn-secondary">Book a Demo</a>
+        </div>
+
+        <!-- Embedded Video Component -->
+        <div class="video-showcase">
+            <video muted playsinline autoplay loop width="1416" height="696">
+                <source src="https://content.upguard.com/hubfs/website-collateral/see-the-unseen_rev03.mp4"
+                    type="video/mp4">
+            </video>
+        </div>
+    </main>
+
+    <script>
+        /* --- THEME SWITCHER CONTROLLER --- */
+        const themeBtn = document.getElementById('themeBtn');
+        const themeDropdown = document.getElementById('themeDropdown');
+        const themeOpts = document.querySelectorAll('.theme-opt');
+
+        themeBtn.addEventListener('click', (e) => { e.stopPropagation(); themeDropdown.classList.toggle('show'); });
+        document.addEventListener('click', () => themeDropdown.classList.remove('show'));
+
+        themeOpts.forEach(opt => {
+            opt.addEventListener('click', () => {
+                const selectedTheme = opt.getAttribute('data-set-theme');
+                if (selectedTheme === 'light') {
+                    document.documentElement.removeAttribute('data-theme');
+                } else {
+                    document.documentElement.setAttribute('data-theme', selectedTheme);
+                }
+                selectedTheme === 'matrix' ? startMatrix() : stopMatrix();
+            });
+        });
+
+        /* --- TYPEWRITER CONSOLE EFFECT --- */
+        const words = ["data breaches.", "vendor leaks.", "supply chain risks.", "zero-day threats."];
+        let wordIndex = 0, charIndex = 0, isDeleting = false;
+        const typewriterElement = document.getElementById('typewriter');
+
+        function typeEffect() {
+            const currentWord = words[wordIndex];
+            typewriterElement.textContent = isDeleting ? currentWord.substring(0, charIndex - 1) : currentWord.substring(0, charIndex + 1);
+            charIndex = isDeleting ? charIndex - 1 : charIndex + 1;
+            let typeSpeed = isDeleting ? 50 : 100;
+
+            if (!isDeleting && charIndex === currentWord.length) {
+                typeSpeed = 2000; isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false; wordIndex = (wordIndex + 1) % words.length; typeSpeed = 500;
+            }
+            setTimeout(typeEffect, typeSpeed);
+        }
+        document.addEventListener('DOMContentLoaded', typeEffect);
+
+        /* --- BACKDROP MATRIX STREAM --- */
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+        let matrixInterval = null, columns = [], fontSize = 16;
+        const alphabet = 'सुरक्षाकीाजाँचकीजारहीहैआपसुरक्षितहैं1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+
+        function initMatrix() {
+            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+            columns = Array(Math.floor(canvas.width / fontSize)).fill(1);
+        }
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#00ff41'; ctx.font = fontSize + 'px monospace';
+            for (let i = 0; i < columns.length; i++) {
+                ctx.fillText(alphabet[Math.floor(Math.random() * alphabet.length)], i * fontSize, columns[i] * fontSize);
+                if (columns[i] * fontSize > canvas.height && Math.random() > 0.975) columns[i] = 0;
+                columns[i]++;
+            }
+        }
+        function startMatrix() { if (matrixInterval) clearInterval(matrixInterval); initMatrix(); matrixInterval = setInterval(drawMatrix, 33); }
+        function stopMatrix() { clearInterval(matrixInterval); matrixInterval = null; ctx.clearRect(0, 0, canvas.width, canvas.height); }
+        window.addEventListener('resize', () => { if (document.documentElement.getAttribute('data-theme') === 'matrix') initMatrix(); });
+    </script>
+</body>
+
+</html>
