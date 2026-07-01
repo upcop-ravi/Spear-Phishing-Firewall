@@ -43,7 +43,38 @@ function readDb() {
                 { id: 'p1', reporter_name: 'Rohan Sharma', reported_url: 'http://fake-ramayana-booking.com', description: 'They sent me a direct payment link on whatsapp asking for full payment before checkin.', status: 'Pending', submitted_at: new Date(Date.now() - 3600000*2).toISOString() },
                 { id: 'p2', reporter_name: 'Anonymous Devotee', reported_url: 'https://ayodhyastay-discount.net', description: 'Huge discounts offered. Page templates are exact duplicates of official pages.', status: 'Reviewed', submitted_at: new Date(Date.now() - 3600000*24).toISOString() }
             ],
-            spam_websites: []
+            spam_websites: [],
+            visitor_logs: [
+                {
+                    id: "v1",
+                    ip: "103.251.140.18",
+                    session_start: "02/07/2026, 12:15:00 AM IST",
+                    session_end: "02/07/2026, 12:22:30 AM IST",
+                    duration: "7m 30s",
+                    actions: [
+                        "[12:15:00 AM] Opened Portal Homepage",
+                        "[12:16:30 AM] Searched for 'Ramayana Hotel'",
+                        "[12:18:00 AM] Scanned Verification QR Code",
+                        "[12:20:15 AM] Viewed verified certificate page"
+                    ],
+                    location: "Ayodhya, Uttar Pradesh, India",
+                    user_agent: "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15"
+                },
+                {
+                    id: "v2",
+                    ip: "122.161.49.201",
+                    session_start: "02/07/2026, 01:05:00 AM IST",
+                    session_end: "02/07/2026, 01:06:15 AM IST",
+                    duration: "1m 15s",
+                    actions: [
+                        "[01:05:00 AM] Opened Portal Homepage",
+                        "[01:05:30 AM] Clicked 'Report Phishing'",
+                        "[01:06:00 AM] Submitted suspicious link: http://fake-ayodhya-hotel.com"
+                    ],
+                    location: "New Delhi, Delhi, India",
+                    user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+                }
+            ]
         };
         const dir = path.dirname(dbPath);
         if (!fs.existsSync(dir)){
@@ -54,7 +85,42 @@ function readDb() {
     }
     try {
         const data = fs.readFileSync(dbPath, 'utf8');
-        return JSON.parse(data);
+        const parsed = JSON.parse(data);
+        if (!parsed.visitor_logs) {
+            parsed.visitor_logs = [
+                {
+                    id: "v1",
+                    ip: "103.251.140.18",
+                    session_start: "02/07/2026, 12:15:00 AM IST",
+                    session_end: "02/07/2026, 12:22:30 AM IST",
+                    duration: "7m 30s",
+                    actions: [
+                        "[12:15:00 AM] Opened Portal Homepage",
+                        "[12:16:30 AM] Searched for 'Ramayana Hotel'",
+                        "[12:18:00 AM] Scanned Verification QR Code",
+                        "[12:20:15 AM] Viewed verified certificate page"
+                    ],
+                    location: "Ayodhya, Uttar Pradesh, India",
+                    user_agent: "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15"
+                },
+                {
+                    id: "v2",
+                    ip: "122.161.49.201",
+                    session_start: "02/07/2026, 01:05:00 AM IST",
+                    session_end: "02/07/2026, 01:06:15 AM IST",
+                    duration: "1m 15s",
+                    actions: [
+                        "[01:05:00 AM] Opened Portal Homepage",
+                        "[01:05:30 AM] Clicked 'Report Phishing'",
+                        "[01:06:00 AM] Submitted suspicious link: http://fake-ayodhya-hotel.com"
+                    ],
+                    location: "New Delhi, Delhi, India",
+                    user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+                }
+            ];
+            fs.writeFileSync(dbPath, JSON.stringify(parsed, null, 2), 'utf8');
+        }
+        return parsed;
     } catch (e) {
         console.error("Error reading database json", e);
         return {};

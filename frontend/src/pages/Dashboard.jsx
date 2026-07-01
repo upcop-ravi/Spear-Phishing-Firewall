@@ -6,7 +6,8 @@ import {
 } from 'recharts';
 import { 
   ShieldAlert, ShieldCheck, Building2, Globe, Send, AlertTriangle, ChevronDown, CheckCircle2,
-  FileText, QrCode, ClipboardList, CheckCircle, RefreshCw, Eye, ExternalLink, Download, LogOut
+  FileText, QrCode, ClipboardList, CheckCircle, RefreshCw, Eye, ExternalLink, Download, LogOut,
+  Users, MapPin, Clock, Monitor, Activity, ChevronRight
 } from 'lucide-react';
 import supabase from '../services/supabaseClient';
 
@@ -33,6 +34,8 @@ export default function Dashboard() {
   const [suspiciousLinks, setSuspiciousLinks] = useState([]);
   const [verifiedHotels, setVerifiedHotels] = useState([]);
   const [publicReports, setPublicReports] = useState([]);
+  const [visitorLogs, setVisitorLogs] = useState([]);
+  const [expandedLog, setExpandedLog] = useState(null);
 
   // Fetch all dashboard stats
   const fetchDashboardData = async () => {
@@ -54,15 +57,17 @@ export default function Dashboard() {
       setTopTargets(data.topTargetedHotels);
 
       // 2. Fetch full lists from Supabase
-      const [linksRes, hotelsRes, reportsRes] = await Promise.all([
+      const [linksRes, hotelsRes, reportsRes, logsRes] = await Promise.all([
         supabase.from('suspicious_links').select('*, verified_hotels(hotel_name, official_url)'),
         supabase.from('verified_hotels').select('*'),
-        supabase.from('public_reports').select('*')
+        supabase.from('public_reports').select('*'),
+        supabase.from('visitor_logs').select('*')
       ]);
 
       if (linksRes.data) setSuspiciousLinks(linksRes.data);
       if (hotelsRes.data) setVerifiedHotels(hotelsRes.data);
       if (reportsRes.data) setPublicReports(reportsRes.data);
+      if (logsRes.data) setVisitorLogs([...logsRes.data].reverse());
 
     } catch (err) {
       console.error('Offline / Fallback mode active:', err);
@@ -221,6 +226,12 @@ Please deactivate all DNS routing immediately under Section 66D of the IT Act.
               className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${activeTab === 'reports' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-600 hover:text-slate-900'}`}
             >
               <ClipboardList className="w-3.5 h-3.5 inline mr-1" /> Reports ({publicReports.length})
+            </button>
+            <button 
+              onClick={() => setActiveTab('visitors')}
+              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${activeTab === 'visitors' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-600 hover:text-slate-900'}`}
+            >
+              <Users className="w-3.5 h-3.5 inline mr-1" /> Visitor Logs ({visitorLogs.length})
             </button>
           </div>
 
@@ -499,6 +510,140 @@ Please deactivate all DNS routing immediately under Section 66D of the IT Act.
                 ))}
               </tbody>
             </table>
+          </div>
+        </div>
+      )}
+
+      {/* RENDER VISITOR LOGS TAB */}
+      {activeTab === 'visitors' && (
+        <div className="space-y-4 animate-in fade-in duration-200">
+          {/* Header bar */}
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-violet-50 flex items-center justify-center">
+                <Activity className="w-5 h-5 text-violet-600" />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-slate-800">Visitor Activity Log</h3>
+                <p className="text-[11px] text-slate-400 font-semibold mt-0.5">Real-time public portal session tracking — IP, IST times, geo-location, page actions</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-[11px] font-bold text-emerald-600">{visitorLogs.length} Sessions Captured</span>
+            </div>
+          </div>
+
+          {/* Summary KPI strip */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {[
+              { label: 'Total Sessions', value: visitorLogs.length, icon: <Users className="w-4 h-4" />, color: 'text-violet-600', bg: 'bg-violet-50' },
+              { label: 'Unique IPs', value: new Set(visitorLogs.map(l => l.ip)).size, icon: <Globe className="w-4 h-4" />, color: 'text-blue-600', bg: 'bg-blue-50' },
+              { label: 'Total Actions', value: visitorLogs.reduce((s, l) => s + (l.actions?.length || 0), 0), icon: <Activity className="w-4 h-4" />, color: 'text-amber-600', bg: 'bg-amber-50' },
+              { label: 'Avg Duration', value: (() => { const d = visitorLogs.filter(l=>l.duration && l.duration!=='0s'); return d.length ? d[d.length-1].duration : 'N/A'; })(), icon: <Clock className="w-4 h-4" />, color: 'text-emerald-600', bg: 'bg-emerald-50' }
+            ].map(({ label, value, icon, color, bg }) => (
+              <div key={label} className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className={`w-7 h-7 rounded-lg ${bg} ${color} flex items-center justify-center`}>{icon}</div>
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{label}</span>
+                </div>
+                <p className="text-2xl font-black text-slate-900">{value}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Logs table */}
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-slate-50 text-[10px] text-slate-500 uppercase tracking-wider font-bold border-b border-slate-100">
+                  <tr>
+                    <th className="p-4">IP Address</th>
+                    <th className="p-4">Geo Location</th>
+                    <th className="p-4">Session Start (IST)</th>
+                    <th className="p-4">Session End (IST)</th>
+                    <th className="p-4">Duration</th>
+                    <th className="p-4">Actions</th>
+                    <th className="p-4">Device</th>
+                    <th className="p-4 text-right">Log</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {visitorLogs.length === 0 ? (
+                    <tr>
+                      <td colSpan={8} className="p-8 text-center text-slate-400 font-semibold">
+                        No visitor sessions recorded yet. Browse the public portal to generate logs.
+                      </td>
+                    </tr>
+                  ) : visitorLogs.map((log) => (
+                    <>
+                      <tr
+                        key={log.id}
+                        className="border-b border-slate-100 hover:bg-violet-50/30 transition-colors font-medium text-slate-700 cursor-pointer"
+                        onClick={() => setExpandedLog(expandedLog === log.id ? null : log.id)}
+                      >
+                        <td className="p-4">
+                          <span className="font-mono font-bold text-violet-700 bg-violet-50 px-2 py-0.5 rounded text-[11px]">{log.ip}</span>
+                        </td>
+                        <td className="p-4">
+                          <span className="flex items-center gap-1.5">
+                            <MapPin className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+                            <span className="font-semibold text-slate-700">{log.location || 'Unknown'}</span>
+                          </span>
+                        </td>
+                        <td className="p-4">
+                          <span className="flex items-center gap-1 text-slate-600">
+                            <Clock className="w-3 h-3 text-indigo-400" />
+                            {log.session_start}
+                          </span>
+                        </td>
+                        <td className="p-4 text-slate-500">{log.session_end}</td>
+                        <td className="p-4">
+                          <span className="px-2 py-1 rounded-md bg-emerald-50 text-emerald-700 font-bold text-[10px]">{log.duration || '0s'}</span>
+                        </td>
+                        <td className="p-4">
+                          <span className="px-2 py-1 rounded-md bg-amber-50 text-amber-700 font-bold text-[10px]">{log.actions?.length || 0} actions</span>
+                        </td>
+                        <td className="p-4 max-w-[150px]">
+                          <span className="flex items-center gap-1 text-slate-500 truncate">
+                            <Monitor className="w-3 h-3 shrink-0" />
+                            <span className="truncate text-[10px]">{(log.user_agent || 'Unknown').split(' ').slice(0, 3).join(' ')}</span>
+                          </span>
+                        </td>
+                        <td className="p-4 text-right">
+                          <ChevronRight className={`w-4 h-4 text-slate-400 inline transition-transform ${expandedLog === log.id ? 'rotate-90' : ''}`} />
+                        </td>
+                      </tr>
+                      {/* Expanded action log row */}
+                      {expandedLog === log.id && (
+                        <tr key={log.id + '-expanded'} className="bg-violet-50/40">
+                          <td colSpan={8} className="px-6 py-4">
+                            <div className="space-y-2">
+                              <p className="text-[10px] font-bold text-violet-600 uppercase tracking-widest mb-3">📋 Full Action Log for Session {log.id}</p>
+                              {(log.actions || []).length === 0 ? (
+                                <p className="text-xs text-slate-400 italic">No actions recorded in this session.</p>
+                              ) : (
+                                <div className="space-y-1.5">
+                                  {(log.actions || []).map((action, idx) => (
+                                    <div key={idx} className="flex items-start gap-2.5">
+                                      <span className="w-5 h-5 rounded-full bg-violet-100 text-violet-600 text-[10px] font-black flex items-center justify-center shrink-0 mt-0.5">{idx + 1}</span>
+                                      <span className="text-xs font-mono text-slate-700 font-semibold">{action}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                              <div className="pt-3 border-t border-violet-100 mt-3">
+                                <p className="text-[10px] text-slate-400 font-semibold">Full User-Agent: {log.user_agent}</p>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                    </>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       )}

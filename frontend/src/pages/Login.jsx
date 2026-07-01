@@ -1,12 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ShieldAlert, Shield, Mail, Lock, CheckCircle, AlertTriangle } from 'lucide-react';
 import supabase from '../services/supabaseClient'; // Make sure this matches your service setup if you choose to write it
+import { logVisitorAction } from '../utils/visitorLogger';
 
 export default function Login() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    logVisitorAction('Opened Officer Login gate');
+  }, []);
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -19,6 +24,7 @@ export default function Login() {
     setLoading(true);
     setErrorMsg(null);
     setSuccessMsg(null);
+    logVisitorAction('Attempted officer login with email: ' + email);
 
     // Strict validation for NIC or official UP Police domains
     const isAllowedDomain = 
@@ -30,6 +36,7 @@ export default function Login() {
 
     if (!isAllowedDomain) {
       setErrorMsg('Unauthorized: strictly restricted to official police email IDs (.nic.in, @upcop.gov.in, @up.gov.in).');
+      logVisitorAction('Login blocked: unauthorized email domain');
       setLoading(false);
       return;
     }
@@ -79,16 +86,19 @@ export default function Login() {
       };
 
       if (mockCredentials[email] && mockCredentials[email] === password) {
+        logVisitorAction('Authentication successful — officer: ' + email);
         setSuccessMsg('Mock Authentication successful! Welcome Administrator.');
         setTimeout(() => {
           navigate('/dashboard'); // Redirect to dashboard
         }, 1500);
       } else if (email === 'admin@safestay.in' && password === 'AdminSafeStay2026!') {
+        logVisitorAction('Authentication successful — admin: ' + email);
         setSuccessMsg('Mock Authentication successful! Welcome Administrator.');
         setTimeout(() => {
           navigate('/dashboard'); // Redirect to dashboard
         }, 1500);
       } else {
+        logVisitorAction('Authentication failed — invalid credentials for: ' + email);
         setErrorMsg('Invalid credentials. Please contact NIC support desk.');
       }
     } finally {

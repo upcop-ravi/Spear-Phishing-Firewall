@@ -130,3 +130,31 @@ CREATE POLICY "Anyone can report spam websites" ON spam_websites
 -- Admins can manage spam websites
 CREATE POLICY "Admins can manage spam websites" ON spam_websites
     FOR ALL USING (auth.user_role() IN ('super_admin', 'admin'));
+
+-- 6. visitor_logs
+CREATE TABLE visitor_logs (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    ip VARCHAR(45) NOT NULL,
+    session_start TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    session_end TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    duration VARCHAR(50),
+    actions TEXT[] DEFAULT '{}',
+    location VARCHAR(255),
+    user_agent TEXT
+);
+
+-- Enable RLS for visitor_logs
+ALTER TABLE visitor_logs ENABLE ROW LEVEL SECURITY;
+
+-- Anyone can insert (public tracking endpoint)
+CREATE POLICY "Anyone can insert visitor logs" ON visitor_logs
+    FOR INSERT WITH CHECK (true);
+
+-- Anyone can update their own session (public tracking endpoint)
+CREATE POLICY "Anyone can update visitor logs" ON visitor_logs
+    FOR UPDATE USING (true);
+
+-- Admins and super_admins can view all visitor logs
+CREATE POLICY "Admins can view visitor logs" ON visitor_logs
+    FOR SELECT USING (auth.user_role() IN ('super_admin', 'admin'));
+

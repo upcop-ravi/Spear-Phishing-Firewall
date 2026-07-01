@@ -1,12 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Building, ShieldCheck, CheckCircle2, AlertTriangle, ArrowLeft } from 'lucide-react';
 import supabase from '../services/supabaseClient';
+import { logVisitorAction } from '../utils/visitorLogger';
 
 export default function Register() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    logVisitorAction('Opened Property Registration form');
+  }, []);
 
   // Form states
   const [hotelName, setHotelName] = useState('');
@@ -54,6 +59,8 @@ export default function Register() {
       setLoading(false);
       return;
     }
+
+    logVisitorAction('Submitted registration for property: ' + hotelName);
 
     try {
       // Insert to verified_hotels via Supabase

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { QRCodeSVG } from 'qrcode.react';
 import { ShieldCheck, ShieldAlert, Clock, Shield, Globe, HelpCircle } from 'lucide-react';
+import { logVisitorAction } from '../utils/visitorLogger';
 
 export default function SecureQRVerification() {
   const { hotel_id } = useParams();
@@ -32,8 +33,10 @@ export default function SecureQRVerification() {
           const found = data.results.find(h => h.id === hotel_id);
           if (found) {
             setHotel(found);
+            logVisitorAction('Viewed QR verification for hotel: ' + found.hotel_name);
           } else {
             setHotel(data.results[0]);
+            logVisitorAction('Viewed QR verification for hotel: ' + data.results[0].hotel_name);
           }
         }
       } catch (err) {
@@ -43,7 +46,9 @@ export default function SecureQRVerification() {
           'h1': { id: 'h1', hotel_name: 'Ramayana Hotel', official_url: 'https://ramayanahotel-ayodhya.in', status: 'Active', police_verification: 'PV-9921-KOTWALI' },
           'h2': { id: 'h2', hotel_name: 'Ayodhya Palace', official_url: 'https://ayodhyapalace-official.org', status: 'Active', police_verification: 'PV-8832-KOTWALI' }
         };
-        setHotel(mockHotels[hotel_id] || mockHotels['h1']);
+        const found = mockHotels[hotel_id] || mockHotels['h1'];
+        setHotel(found);
+        logVisitorAction('Viewed QR verification for hotel (offline): ' + found.hotel_name);
       } finally {
         setLoading(false);
       }

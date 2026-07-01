@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Shield, ShieldAlert, CheckCircle, Search, AlertCircle, Building, X, ExternalLink } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { logVisitorAction } from '../utils/visitorLogger';
 
 function Typewriter() {
   const { i18n } = useTranslation();
@@ -104,14 +105,20 @@ export default function Home() {
   const [reportSuccess, setReportSuccess] = useState(false);
   const [flaggingUrls, setFlaggingUrls] = useState({}); // { [url]: 'loading' | 'success' | 'error' }
 
+  useEffect(() => {
+    logVisitorAction('Visited Home Portal');
+  }, []);
+
   const toggleLanguage = () => {
     const nextLang = i18n.language === 'en' ? 'hi' : 'en';
     i18n.changeLanguage(nextLang);
+    logVisitorAction('Changed language to ' + (nextLang === 'hi' ? 'Hindi' : 'English'));
   };
 
   const handleReportSpamDirect = async (url, title) => {
     if (!url) return;
     setFlaggingUrls(prev => ({ ...prev, [url]: 'loading' }));
+    logVisitorAction('Flagged search result spam link: ' + url);
     
     try {
       const res = await fetch('http://localhost:5000/api/mobile/spam', {
@@ -142,6 +149,7 @@ export default function Home() {
     setIsSearching(true);
     setSearchResults(null);
     setGoogleSearchResults([]);
+    logVisitorAction('Searched hotel / booking channel: "' + searchQuery + '"');
 
     try {
       // Fetch from backend public endpoint
@@ -187,6 +195,7 @@ export default function Home() {
   const handleReportSubmit = async (e) => {
     e.preventDefault();
     if (!reportedUrl.trim()) return;
+    logVisitorAction('Submitted public phishing report for URL: ' + reportedUrl);
 
     try {
       const res = await fetch('http://localhost:5000/api/mobile/report', {
