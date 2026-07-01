@@ -50,6 +50,8 @@ const INITIAL_DB = {
                 "[12:20:15 AM] Viewed verified certificate page"
             ],
             location: "Ayodhya, Uttar Pradesh, India",
+            lat: 26.7922,
+            lng: 82.1998,
             user_agent: "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15"
         },
         {
@@ -64,6 +66,8 @@ const INITIAL_DB = {
                 "[01:06:00 AM] Submitted suspicious link: http://fake-ayodhya-hotel.com"
             ],
             location: "New Delhi, Delhi, India",
+            lat: 28.6139,
+            lng: 77.2090,
             user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
         }
     ]

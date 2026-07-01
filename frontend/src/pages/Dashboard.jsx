@@ -586,9 +586,24 @@ Please deactivate all DNS routing immediately under Section 66D of the IT Act.
                           <span className="font-mono font-bold text-violet-700 bg-violet-50 px-2 py-0.5 rounded text-[11px]">{log.ip}</span>
                         </td>
                         <td className="p-4">
-                          <span className="flex items-center gap-1.5">
-                            <MapPin className="w-3.5 h-3.5 text-rose-500 shrink-0" />
-                            <span className="font-semibold text-slate-700">{log.location || 'Unknown'}</span>
+                          <span className="flex flex-col gap-0.5">
+                            <span className="flex items-center gap-1.5">
+                              <MapPin className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+                              <span className="font-semibold text-slate-700">{log.location || 'Unknown'}</span>
+                            </span>
+                            {log.lat != null && log.lng != null ? (
+                              <a
+                                href={`https://www.google.com/maps?q=${log.lat},${log.lng}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-[10px] font-mono text-indigo-500 hover:text-indigo-700 hover:underline ml-5"
+                                onClick={e => e.stopPropagation()}
+                              >
+                                📍 {log.lat.toFixed(4)}°N, {log.lng.toFixed(4)}°E
+                              </a>
+                            ) : (
+                              <span className="text-[10px] font-mono text-slate-400 ml-5">Coordinates unavailable</span>
+                            )}
                           </span>
                         </td>
                         <td className="p-4">

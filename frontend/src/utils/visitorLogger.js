@@ -34,9 +34,9 @@ function generateId() {
 
 // Fallback IPs and locations for testing / offline mode
 const MOCK_LOCATIONS = [
-  { ip: '103.251.140.18', city: 'Ayodhya', region: 'Uttar Pradesh', country: 'India' },
-  { ip: '122.161.49.201', city: 'New Delhi', region: 'Delhi', country: 'India' },
-  { ip: '106.220.198.54', city: 'Lucknow', region: 'Uttar Pradesh', country: 'India' }
+  { ip: '103.251.140.18', city: 'Ayodhya', region: 'Uttar Pradesh', country: 'India', lat: 26.7922, lng: 82.1998 },
+  { ip: '122.161.49.201', city: 'New Delhi', region: 'Delhi', country: 'India', lat: 28.6139, lng: 77.2090 },
+  { ip: '106.220.198.54', city: 'Lucknow', region: 'Uttar Pradesh', country: 'India', lat: 26.8467, lng: 80.9462 }
 ];
 
 // Initialize and track visitor session
@@ -52,6 +52,8 @@ export async function initVisitorSession() {
   
   let ip = '127.0.0.1';
   let location = 'Localhost, India';
+  let lat = null;
+  let lng = null;
   
   try {
     // Fetch real IP & location dynamically (non-blocking)
@@ -60,6 +62,8 @@ export async function initVisitorSession() {
       const data = await res.json();
       ip = data.ipAddress || '127.0.0.1';
       location = `${data.cityName || 'Unknown City'}, ${data.regionName || 'Unknown Region'}, ${data.countryName || 'India'}`;
+      lat = data.latitude ?? null;
+      lng = data.longitude ?? null;
     } else {
       throw new Error();
     }
@@ -68,6 +72,8 @@ export async function initVisitorSession() {
     const rand = MOCK_LOCATIONS[Math.floor(Math.random() * MOCK_LOCATIONS.length)];
     ip = rand.ip;
     location = `${rand.city}, ${rand.region}, ${rand.country}`;
+    lat = rand.lat;
+    lng = rand.lng;
   }
   
   const nowStr = getISTString();
@@ -79,6 +85,8 @@ export async function initVisitorSession() {
     duration: '0s',
     actions: [`[${new Date().toLocaleTimeString('en-IN')}] Session Initialized`],
     location,
+    lat,
+    lng,
     user_agent: navigator.userAgent
   };
   
