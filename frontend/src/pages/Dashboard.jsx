@@ -1005,6 +1005,8 @@ export function KpiCard({ title, value, icon, color, bg, highlight, onClick }) {
 // ─────────────────────────────────────────────
 export function UpdateProfileTab({ loggedInUser, systemUsers, selectedUserId, setSelectedUserId, onProfileUpdated }) {
   const isSuperAdmin = loggedInUser?.role === 'super_admin';
+  const isAdmin = loggedInUser?.role === 'admin';
+  const canEditOthers = isSuperAdmin || isAdmin;
   
   // Decide which user we are editing
   const editingUserId = selectedUserId || loggedInUser?.id || '';
@@ -1106,9 +1108,17 @@ export function UpdateProfileTab({ loggedInUser, systemUsers, selectedUserId, se
         onProfileUpdated(updatedProfile);
         setSuccessMsg('Your profile has been updated successfully.');
       } else {
-        // 2. Super Admin editing another user
-        if (!isSuperAdmin) {
-          throw new Error('Unauthorized: only super admins can update other profiles.');
+        // 2. Super Admin or Admin editing another user
+        if (!canEditOthers) {
+          throw new Error('Unauthorized: only super admins and admins can update other profiles.');
+        }
+
+        // Admin validation: can only update if target is thana_user
+        const targetUser = systemUsers.find(u => u.id === editingUserId);
+        if (isAdmin && !isSuperAdmin) {
+          if (targetUser?.role !== 'thana_user') {
+             throw new Error('Unauthorized: Admins can only update police station profiles.');
+          }
         }
 
         // Call backend API
@@ -1178,8 +1188,8 @@ export function UpdateProfileTab({ loggedInUser, systemUsers, selectedUserId, se
         </div>
       </div>
 
-      {/* Super Admin selector */}
-      {isSuperAdmin && (
+      {/* Admin/Super Admin selector */}
+      {canEditOthers && (
         <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 mb-6 space-y-2 font-sans">
           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block font-sans">
             Select User to Edit
@@ -1193,6 +1203,7 @@ export function UpdateProfileTab({ loggedInUser, systemUsers, selectedUserId, se
               <option value={loggedInUser?.id}>My Profile ({loggedInUser?.thana_name})</option>
               {systemUsers
                 .filter(u => u.id !== loggedInUser?.id)
+                .filter(u => isSuperAdmin ? true : u.role === 'thana_user')
                 .map(u => (
                   <option key={u.id} value={u.id}>
                     {u.thana_name} ({u.role === 'super_admin' ? 'Super Admin' : u.role === 'admin' ? 'Admin' : 'Officer'}) - {u.nic_email}
