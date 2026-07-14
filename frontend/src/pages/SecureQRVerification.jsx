@@ -26,7 +26,8 @@ export default function SecureQRVerification() {
   useEffect(() => {
     const fetchHotel = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/mobile/verify?query=${hotel_id}`);
+        const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+        const res = await fetch(`${apiBase}/api/mobile/verify?query=${hotel_id}`);
         const data = await res.json();
         if (data.success && data.results.length > 0) {
           // Exact match search by id

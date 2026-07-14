@@ -41,8 +41,8 @@ export default function Dashboard() {
   const fetchDashboardData = async () => {
     setLoading(true);
     try {
-      // 1. Fetch from analytics API
-      const res = await fetch(`http://localhost:5000/api/analytics?date_range=${dateRange}`);
+      const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const res = await fetch(`${apiBase}/api/analytics?date_range=${dateRange}`);
       const data = await res.json();
       
       setKpis({
