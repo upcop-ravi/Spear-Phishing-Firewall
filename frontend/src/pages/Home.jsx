@@ -114,7 +114,8 @@ export default function Home() {
     setFlaggingUrls(prev => ({ ...prev, [url]: 'loading' }));
     
     try {
-      const res = await fetch('http://localhost:5000/api/mobile/spam', {
+      const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const res = await fetch(`${apiBase}/api/mobile/spam`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -145,7 +146,8 @@ export default function Home() {
 
     try {
       // Fetch from backend public endpoint
-      const res = await fetch(`http://localhost:5000/api/mobile/verify?query=${encodeURIComponent(searchQuery)}`);
+      const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const res = await fetch(`${apiBase}/api/mobile/verify?query=${encodeURIComponent(searchQuery)}`);
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
@@ -189,7 +191,8 @@ export default function Home() {
     if (!reportedUrl.trim()) return;
 
     try {
-      const res = await fetch('http://localhost:5000/api/mobile/report', {
+      const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const res = await fetch(`${apiBase}/api/mobile/report`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
