@@ -43,64 +43,114 @@ export default function Login() {
 
     try {
       // Setup Supabase Auth attempt
-      const { data, error } = await supabase.auth.signInWithPassword({
+      let signInRes = await supabase.auth.signInWithPassword({
         email,
         password
       });
 
-      if (error) throw error;
+      let authError = signInRes.error;
+      let authUser = signInRes.data?.user;
+
+      if (authError) {
+        // If user does not exist in Supabase Auth, check if they are using one of the official credentials
+        const mockCredentials = {
+          'sho-kotnagar.ay@up.gov.in': '9454403303@Sho',
+          'sho-cantt.ay@up.gov.in': '9454403298@Sho',
+          'sho-mahilathana.ay@up.gov.in': '9454403306@Sho',
+          'sho-kotayodhya.ay@up.gov.in': '9454403296@Sho',
+          'sho-rjb.ay@up.gov.in': '9454403310@Sho',
+          'sho-purakalander.ay@up.gov.in': '9454403309@Sho',
+          'sho-raunahi.ay@up.gov.in': '9454403311@Sho',
+          'sho-mahrajganj.ay@up.gov.in': '9454403305@Sho',
+          'sho-gosaiganj.ay@up.gov.in': '9454403299@Sho',
+          'sho-kotbikapur.ay@up.gov.in': '9454403297@Sho',
+          'sho-tarun.ay@up.gov.in': '9454403313@Sho',
+          'sho-haiderganj.ay@up.gov.in': '9454403300@Sho',
+          'sho-inshotnagar.ay@up.gov.in': '9454403301@Sho',
+          'sho-kumarganj.ay@up.gov.in': '9454403304@Sho',
+          'sho-khandasa.ay@up.gov.in': '9454403302@Sho',
+          'sho-kotrudauli.ay@up.gov.in': '9454403312@Sho',
+          'sho-mawai.ay@up.gov.in': '9454403307@Sho',
+          'patarangafzd@gmail.com': '9454403308@Sho',
+          'sho-bababazar.ay@up.gov.in': '9454403314@Sho',
+          'so-ahtu.ay@up.gov.in': '7839860546@Sho',
+          'sho-cybercrime.ay@up.gov.in': '7839876653@Sho',
+          'admin@safestay.in': 'AdminSafeStay2026!',
+          'superadmin@up.nic.in': 'admin@123'
+        };
+
+        if (mockCredentials[email] && mockCredentials[email] === password) {
+          console.log('Valid credentials. Auto-signing up user in Supabase Auth...');
+          
+          const signUpRes = await supabase.auth.signUp({
+            email,
+            password
+          });
+
+          if (signUpRes.error) throw signUpRes.error;
+          authUser = signUpRes.data?.user;
+
+          if (authUser) {
+            // Check if the user is already in public.system_users table
+            const { data: existingUser } = await supabase
+              .from('system_users')
+              .select('id')
+              .eq('nic_email', email)
+              .maybeSingle();
+
+            if (!existingUser) {
+              const defaultThanas = {
+                'sho-kotnagar.ay@up.gov.in': { name: 'Kotwali Nagar', mobile: '9454403303', role: 'thana_user' },
+                'sho-cantt.ay@up.gov.in': { name: 'Kotwali Cantt', mobile: '9454403298', role: 'thana_user' },
+                'sho-mahilathana.ay@up.gov.in': { name: 'Mahila Thana', mobile: '9454403306', role: 'thana_user' },
+                'sho-kotayodhya.ay@up.gov.in': { name: 'Kotwali Ayodhya', mobile: '9454403296', role: 'thana_user' },
+                'sho-rjb.ay@up.gov.in': { name: 'Ram Janm Bhoomi', mobile: '9454403310', role: 'thana_user' },
+                'sho-purakalander.ay@up.gov.in': { name: 'Poorakalandar', mobile: '9454403309', role: 'thana_user' },
+                'sho-raunahi.ay@up.gov.in': { name: 'Raunahi', mobile: '9454403311', role: 'thana_user' },
+                'sho-cybercrime.ay@up.gov.in': { name: 'Cyber Thana', mobile: '7839876653', role: 'thana_user' },
+                'superadmin@up.nic.in': { name: 'Cyber Cell HQ', mobile: '9999999999', role: 'super_admin' },
+                'admin@safestay.in': { name: 'Administrator', mobile: '8888888888', role: 'admin' }
+              };
+
+              const details = defaultThanas[email] || { name: 'Officer', mobile: '0000000000', role: 'thana_user' };
+
+              // Seed the system_users record using the auto-created auth user ID
+              const { error: dbError } = await supabase
+                .from('system_users')
+                .insert([{
+                  id: authUser.id,
+                  thana_name: details.name,
+                  nic_email: email,
+                  cug_mobile: details.mobile,
+                  role: details.role,
+                  is_active: true
+                }]);
+              
+              if (dbError) throw dbError;
+            }
+
+            // Retry login
+            const retryRes = await supabase.auth.signInWithPassword({
+              email,
+              password
+            });
+            if (retryRes.error) throw retryRes.error;
+          }
+        } else {
+          throw authError;
+        }
+      }
 
       setSuccessMsg('Authentication successful! Loading Secure Police Portal...');
+      logVisitorAction('Authentication successful — email: ' + email);
       setTimeout(() => {
         navigate('/dashboard'); // Redirect to protected dashboard
-      }, 2000);
+      }, 1500);
 
     } catch (err) {
       console.error('Login error:', err);
-      
-      // Fallback for demonstration: let user login if credentials match mock
-      const mockCredentials = {
-        'sho-kotnagar.ay@up.gov.in': '9454403303@Sho',
-        'sho-cantt.ay@up.gov.in': '9454403298@Sho',
-        'sho-mahilathana.ay@up.gov.in': '9454403306@Sho',
-        'sho-kotayodhya.ay@up.gov.in': '9454403296@Sho',
-        'sho-rjb.ay@up.gov.in': '9454403310@Sho',
-        'sho-purakalander.ay@up.gov.in': '9454403309@Sho',
-        'sho-raunahi.ay@up.gov.in': '9454403311@Sho',
-        'sho-mahrajganj.ay@up.gov.in': '9454403305@Sho',
-        'sho-gosaiganj.ay@up.gov.in': '9454403299@Sho',
-        'sho-kotbikapur.ay@up.gov.in': '9454403297@Sho',
-        'sho-tarun.ay@up.gov.in': '9454403313@Sho',
-        'sho-haiderganj.ay@up.gov.in': '9454403300@Sho',
-        'sho-inshotnagar.ay@up.gov.in': '9454403301@Sho',
-        'sho-kumarganj.ay@up.gov.in': '9454403304@Sho',
-        'sho-khandasa.ay@up.gov.in': '9454403302@Sho',
-        'sho-kotrudauli.ay@up.gov.in': '9454403312@Sho',
-        'sho-mawai.ay@up.gov.in': '9454403307@Sho',
-        'patarangafzd@gmail.com': '9454403308@Sho',
-        'sho-bababazar.ay@up.gov.in': '9454403314@Sho',
-        'so-ahtu.ay@up.gov.in': '7839860546@Sho',
-        'sho-cybercrime.ay@up.gov.in': '7839876653@Sho',
-        'admin@safestay.in': 'AdminSafeStay2026!',
-        'superadmin@up.nic.in': 'admin@123'
-      };
-
-      if (mockCredentials[email] && mockCredentials[email] === password) {
-        logVisitorAction('Authentication successful — officer: ' + email);
-        setSuccessMsg('Mock Authentication successful! Welcome Administrator.');
-        setTimeout(() => {
-          navigate('/dashboard'); // Redirect to dashboard
-        }, 1500);
-      } else if (email === 'admin@safestay.in' && password === 'AdminSafeStay2026!') {
-        logVisitorAction('Authentication successful — admin: ' + email);
-        setSuccessMsg('Mock Authentication successful! Welcome Administrator.');
-        setTimeout(() => {
-          navigate('/dashboard'); // Redirect to dashboard
-        }, 1500);
-      } else {
-        logVisitorAction('Authentication failed — invalid credentials for: ' + email);
-        setErrorMsg('Invalid credentials. Please contact NIC support desk.');
-      }
+      logVisitorAction('Authentication failed — email: ' + email);
+      setErrorMsg(err.message || 'Invalid credentials. Please contact NIC support desk.');
     } finally {
       setLoading(false);
     }
