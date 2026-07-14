@@ -13,8 +13,12 @@ function App() {
   // Authentication check for dashboard routing (in production, integrate Supabase session)
   const isAuthenticated = true; // Set to true to allow dashboard viewing
 
+  const hostname = window.location.hostname;
+  const isCustomDomain = hostname.includes('upcopravi.site') || hostname.includes('localhost') || hostname.includes('127.0.0.1');
+  const basename = isCustomDomain ? '/' : '/Spear-Phishing-Firewall';
+
   return (
-    <Router basename={import.meta.env.DEV ? '/' : '/Spear-Phishing-Firewall'}>
+    <Router basename={basename}>
       <div className="min-h-screen bg-slate-50 text-slate-900 font-sans">
         <Routes>
           {/* Public Portal Landing */}
