@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Building, ShieldCheck, CheckCircle2, AlertTriangle, ArrowLeft } from 'lucide-react';
@@ -16,32 +16,42 @@ export default function Register() {
   const [gstNumber, setGstNumber] = useState('');
   const [policeVerification, setPoliceVerification] = useState('');
   const [thanaId, setThanaId] = useState(''); // Thana id foreign key
-  
+  const [thanas, setThanas] = useState([]);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState(null);
   const [success, setSuccess] = useState(false);
 
-  // Thana users options mock
-  const thanas = [
-    { id: 'u1', name: 'Kotwali Nagar' },
-    { id: 'u2', name: 'Kotwali Cantt' },
-    { id: 'u4', name: 'Kotwali Ayodhya' },
-    { id: 'u5', name: 'Ram Janm Bhoomi' },
-    { id: 'u6', name: 'Poorakalandar' },
-    { id: 'u7', name: 'Raunahi' },
-    { id: 'u8', name: 'Maharajganj' },
-    { id: 'u9', name: 'Gosainganj' },
-    { id: 'u10', name: 'Kotwali Bikapur' },
-    { id: 'u11', name: 'Tarun' },
-    { id: 'u12', name: 'Haiderganj' },
-    { id: 'u13', name: 'Kotwali Inayat Nagar' },
-    { id: 'u14', name: 'Kumarganj' },
-    { id: 'u15', name: 'Khandasa' },
-    { id: 'u16', name: 'Kotwali Rudauli' },
-    { id: 'u17', name: 'Mawai' },
-    { id: 'u18', name: 'Patranga' },
-    { id: 'u19', name: 'Baba Bazar' }
-  ];
+  useEffect(() => {
+    async function loadThanas() {
+      try {
+        const { data, error } = await supabase
+          .from('system_users')
+          .select('id, thana_name')
+          .eq('role', 'thana_user')
+          .eq('is_active', true)
+          .order('thana_name');
+        if (error) throw error;
+        if (data && data.length > 0) {
+          setThanas(data.map(t => ({ id: t.id, name: t.thana_name })));
+        } else {
+          setThanas([
+            { id: 'u1', name: 'Kotwali Nagar (Mock)' },
+            { id: 'u2', name: 'Kotwali Cantt (Mock)' },
+            { id: 'u4', name: 'Kotwali Ayodhya (Mock)' },
+            { id: 'u5', name: 'Ram Janm Bhoomi (Mock)' }
+          ]);
+        }
+      } catch (err) {
+        console.error('Failed to load thanas from Supabase:', err);
+        setThanas([
+          { id: 'u1', name: 'Kotwali Nagar (Fallback)' },
+          { id: 'u2', name: 'Kotwali Cantt (Fallback)' },
+          { id: 'u4', name: 'Kotwali Ayodhya (Fallback)' }
+        ]);
+      }
+    }
+    loadThanas();
+  }, []);
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -80,11 +90,7 @@ export default function Register() {
 
     } catch (err) {
       console.error('Registration error:', err);
-      // Mock fallback Success for UI demonstration if supabase is local mock
-      setSuccess(true);
-      setTimeout(() => {
-        navigate('/');
-      }, 3000);
+      setErrorMsg(err.message || 'An error occurred during registration. Please try again.');
     } finally {
       setLoading(false);
     }
