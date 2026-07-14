@@ -265,6 +265,18 @@ const mockSupabase = {
         onAuthStateChange: (callback) => {
             // Noop
             return { data: { subscription: { unsubscribe: () => {} } } };
+        },
+        admin: {
+            createUser: async ({ email, password, email_confirm }) => {
+                const id = 'mock-user-' + Math.random().toString(36).substring(2, 11);
+                return { data: { user: { id, email } }, error: null };
+            },
+            updateUserById: async (id, attributes) => {
+                return { data: { user: { id } }, error: null };
+            },
+            deleteUser: async (id) => {
+                return { data: {}, error: null };
+            }
         }
     }
 };

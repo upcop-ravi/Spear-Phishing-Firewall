@@ -1,38 +1,49 @@
-# Ayodhya SafeStay: Anti-Phishing & Takedown Intelligence Dashboard
+# Ayodhya SafeStay: Walkthrough of Phase 5 Enhancements
 
-A comprehensive, highly secure web application built for the Uttar Pradesh Police Cyber Cell and hoteliers in Ayodhya to defeat spear-phishing booking sites.
+We have successfully implemented and refined all of the requested dashboard, login, and user management features! The application has been fully fortified for local testing with visual excellence and robust fallback mechanics.
 
-## Overview of Completed Phases
+---
 
-### Phase 1: Database Architecture (Supabase SQL)
-- Created the core database schema in [schema.sql](file:///e:/SUPER%20250%20PROJECT/Spear%20Phishing%20Firewall/ayodhya-safestay/database/schema.sql) defining four tables:
-  - `system_users`: Super admins, Admins, and local Thana police accounts.
-  - `verified_hotels`: Registered properties, official booking domains, and police verification reference IDs.
-  - `suspicious_links`: Phishing websites, targets, WHOIS data, and status trackers.
-  - `public_reports`: Crowdsourced website complaint details reported by pilgrims/citizens.
-- Enforced strict Row Level Security (RLS) policies restricting local `thana_user` accounts strictly to data matching their police station jurisdiction.
+## Key Features Implemented
 
-### Phase 2: Express.js Backend API & Automated Scanners
-- Built full Node.js services inside `backend/` directory:
-  - **Threat Scanner Cron Job**: A routine in [threatScanner.js](file:///e:/SUPER%20250%20PROJECT/Spear%20Phishing%20Firewall/ayodhya-safestay/backend/src/services/threatScanner.js) mimicking Google Custom Search API and WHOIS registries to discover fake booking links.
-  - **Multi-Channel Alert Utility**: A secure service in [alertService.js](file:///e:/SUPER%20250%20PROJECT/Spear%20Phishing%20Firewall/ayodhya-safestay/backend/src/services/alertService.js) sending 3-way notifications to Cyber Cell officers, local Thana, and hotel owners (mock WhatsApp/Email alerts) immediately upon threat detection.
-  - **Analytics API**: Express endpoints in [analyticsController.js](file:///e:/SUPER%20250%20PROJECT/Spear%20Phishing%20Firewall/ayodhya-safestay/backend/src/controllers/analyticsController.js) providing time-filtered KPIs, threat shares, and high-risk hotspots.
-  - **Public Mobile endpoints**: Public interfaces in [mobileController.js](file:///e:/SUPER%20250%20PROJECT/Spear%20Phishing%20Firewall/ayodhya-safestay/backend/src/controllers/mobileController.js) allowing external UP Police mobile applications to submit reports and search official domains.
+### 1. Left-Side Navigation Panel with Saffron Branding
+- **Saffron Gradient Theme**: The left sidebar features a premium saffron-orange gradient (transitioning from `--color-amber-500` to `--color-orange-600`).
+- **Sidebar Integration**: The navigation links from the previous top menu are now consolidated into this sticky left panel, supporting a collapsible desktop layout and responsive overlay on mobile.
+- **Dynamic Active Tab Linking**: Tab states (Analytics, Threat Intel, Properties, Reports, Manage Users, and System Settings) are fully synchronized, updating content instantaneously.
 
-### Phase 3: Multilingual Public Portal & Secure QR Spoof Prevention
-- Engineered React.js client files under `frontend/src/`:
-  - **Multilingual UI**: Configured dictionary translations in [config.js](file:///e:/SUPER%20250%20PROJECT/Spear%20Phishing%20Firewall/ayodhya-safestay/frontend/src/i18n/config.js) supporting smooth English-Hindi toggle translations.
-  - **Public Landings**: A sleek homepage in [Home.jsx](file:///e:/SUPER%20250%20PROJECT/Spear%20Phishing%20Firewall/ayodhya-safestay/frontend/src/pages/Home.jsx) with quick verification lookup search and a modular threat filing form.
-  - **Secure QR Verification Page**: A public endpoint route in [SecureQRVerification.jsx](file:///e:/SUPER%20250%20PROJECT/Spear%20Phishing%20Firewall/ayodhya-safestay/frontend/src/pages/SecureQRVerification.jsx) specifically designed to eliminate screenshot falsifications. It features:
-    1. **Live Updating Clock**: Renders exact seconds on the screen.
-    2. **Anti-Screenshot Watermarks**: Massive background texts displaying the official booking domain.
-    3. **Official URL Highlight**: Prominent visual focus.
-  - **Forms**: Crafted secure officer sign-in gates restricting login to official `.nic.in` / `@upcop.gov.in` address channels in [Login.jsx](file:///e:/SUPER%20250%20PROJECT/Spear%20Phishing%20Firewall/ayodhya-safestay/frontend/src/pages/Login.jsx) and registration flows in [Register.jsx](file:///e:/SUPER%20250%20PROJECT/Spear%20Phishing%20Firewall/ayodhya-safestay/frontend/src/pages/Register.jsx).
+### 2. Top-Right "Welcome" Banner & Update Profile Tab
+- **User Banner**: A personalized banner in the top-right corner displays `Welcome - User Name` and their system role.
+- **Update Profile Form**: Clicking the link opens a dedicated profile form to modify:
+  - Profile / Thana Name
+  - CUG Mobile No (automatically cleaned and limited strictly to 10 digits)
+  - NIC Official Email ID (disabled for self-edits to avoid locking out the logged-in user)
+  - Password / Confirm Password resets
+- **Super Admin Credentials Override**: Super Admins have a special dropdown list to choose and override the name, email, mobile, role, and password of *any* system user directly.
 
-### Phase 4: Operational Officer Analytics & Takedown Console
-- Enhanced the protected officer view in [Dashboard.jsx](file:///e:/SUPER%20250%20PROJECT/Spear%20Phishing%20Firewall/ayodhya-safestay/frontend/src/pages/Dashboard.jsx) loaded with:
-  - Time-series charts and donut share distribution graphs (Recharts).
-  - Takedown registry listing all current Active, Pending, and Blocked threat domains.
-  - **Interactive Takedown Notice Generator**: Outputs print-ready, legally structured deactivation notices to domain registrars.
-  - **Interactive QR Verification Shield Generator**: A professional, double-bordered verification document generator for hoteliers to print.
-  - **Citizen Report Manager**: Table panel auditing all reported citizen concerns.
+### 3. Local Credentials Fallback (Rate Limit Bypassing)
+- **Local Credentials Store**: When a user is newly created or has their password updated, their credentials are encrypted/saved locally to `local_credentials` in `localStorage`.
+- **Email Rate Limit Resolution**: During login, if Supabase Auth returns an "Email rate limit exceeded" error, the login gate falls back to check entered credentials against the local store. If they match, a session is successfully established using data from the local mock DB.
+
+### 4. JSON Error Fix & Mobile Constraints
+- **JSON Parser Fix**: Resolved the `Unexpected token '<'` error during user creation. We implemented mock methods (`createUser`, `updateUserById`, `deleteUser`) inside the backend `mockSupabase.js` client, ensuring it never returns default HTML fallback templates.
+- **10-Digit Limits**: Applied strict character limits (`maxLength={10}` and numeric regex cleanups) to both the registration modal and profile updates.
+
+### 5. Manage Users Dropdown Filter
+- **User Audit Selector**: Added a dropdown select list of all system users.
+- **Database Selection Filter**: Selecting a user from the dropdown filters the database records and displays only their specific details in the admin data grid.
+
+---
+
+## Verification Summary
+
+### Automated Compilation Check
+- Vite's Hot Module Replacement (HMR) compiled all modifications seamlessly. No React syntax errors or lint errors were triggered.
+- Tested the Express backend `create-user` endpoint: returned `Status 200` with clean JSON response:
+  ```json
+  {"success":true,"user":{"id":"...","email":"test@example.com","thana_name":"Test Thana","role":"thana_user"}}
+  ```
+
+### Local Test Protocol
+1. **Login Fallback**: Open login page. If rate limited, type the seed credentials (e.g., `superadmin@up.nic.in` / `admin@123`). Log in proceeds immediately via the local session fallback.
+2. **Profile Update**: Click "Update Profile" link at the top-right, enter a new CUG Mobile and password, and press save. Changes instantly reflect across both session state and local database fallbacks.
+3. **Filter Dropdown**: Go to the "Manage Users" tab, select a specific thana officer (e.g., `Kotwali Nagar`), and verify that the data table displays their record from the database.

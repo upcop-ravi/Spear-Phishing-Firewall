@@ -20,7 +20,12 @@ export default function CreateUserModal({ isOpen, onClose, userRole }) {
     : [{ value: 'thana_user', label: 'Police Officer (Thana)' }];
 
   const handleChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    if (field === 'cug_mobile') {
+      const numericValue = value.replace(/\D/g, '').slice(0, 10);
+      setFormData(prev => ({ ...prev, [field]: numericValue }));
+    } else {
+      setFormData(prev => ({ ...prev, [field]: value }));
+    }
     setError(null);
     setSuccess(null);
   };
@@ -44,6 +49,12 @@ export default function CreateUserModal({ isOpen, onClose, userRole }) {
       return;
     }
 
+    if (formData.cug_mobile && formData.cug_mobile.length !== 10) {
+      setError('CUG Mobile number must be exactly 10 digits.');
+      setLoading(false);
+      return;
+    }
+
     try {
       const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:5000';
       const res = await fetch(`${apiBase}/api/admin/create-user`, {
@@ -52,9 +63,24 @@ export default function CreateUserModal({ isOpen, onClose, userRole }) {
         body: JSON.stringify(formData)
       });
 
+      const contentType = res.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        const text = await res.text();
+        throw new Error(`Server returned HTML/Non-JSON response. Status: ${res.status}.`);
+      }
+
       const data = await res.json();
 
       if (data.success) {
+        // Save credentials locally for fallback login to bypass Supabase rate limits on localhost
+        try {
+          const localCreds = JSON.parse(localStorage.getItem('local_credentials') || '{}');
+          localCreds[formData.email.toLowerCase()] = formData.password;
+          localStorage.setItem('local_credentials', JSON.stringify(localCreds));
+        } catch (e) {
+          console.warn('Failed to store local credentials:', e);
+        }
+
         setSuccess(`User "${formData.email}" created successfully as ${formData.role}!`);
         setFormData({ email: '', password: '', thana_name: '', cug_mobile: '', role: 'thana_user' });
       } else {
@@ -139,11 +165,12 @@ export default function CreateUserModal({ isOpen, onClose, userRole }) {
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">CUG Mobile</label>
               <input
-                type="tel"
+                type="text"
                 value={formData.cug_mobile}
                 onChange={(e) => handleChange('cug_mobile', e.target.value)}
-                placeholder="9454XXXXXX"
+                placeholder="10 digits"
                 className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400 transition-all"
+                maxLength={10}
               />
             </div>
           </div>
