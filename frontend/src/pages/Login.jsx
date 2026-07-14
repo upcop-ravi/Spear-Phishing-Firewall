@@ -133,10 +133,24 @@ export default function Login() {
           throw authError;
         }
       }
+      // Fetch user profile (role, thana) from system_users
+      const { data: profile } = await supabase
+        .from('system_users')
+        .select('role, thana_name, nic_email, cug_mobile')
+        .eq('nic_email', email)
+        .maybeSingle();
+
+      const userProfile = {
+        email,
+        role: profile?.role || 'thana_user',
+        thana_name: profile?.thana_name || 'Officer',
+        cug_mobile: profile?.cug_mobile || ''
+      };
+      localStorage.setItem('user_profile', JSON.stringify(userProfile));
 
       setSuccessMsg('Authentication successful! Loading Secure Police Portal...');
       setTimeout(() => {
-        navigate('/dashboard'); // Redirect to protected dashboard
+        navigate('/dashboard');
       }, 1500);
 
     } catch (err) {

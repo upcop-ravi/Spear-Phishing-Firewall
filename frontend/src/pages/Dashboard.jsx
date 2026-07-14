@@ -9,6 +9,8 @@ import {
   FileText, QrCode, ClipboardList, CheckCircle, RefreshCw, Eye, ExternalLink, Download, LogOut
 } from 'lucide-react';
 import supabase from '../services/supabaseClient';
+import Sidebar from '../components/Sidebar';
+import CreateUserModal from '../components/CreateUserModal';
 
 const COLORS = ['#ef4444', '#f59e0b', '#10b981']; // Red, Amber, Green
 
@@ -16,6 +18,16 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('analytics');
   const [dateRange, setDateRange] = useState('Last 7 Days');
+  const [showCreateUser, setShowCreateUser] = useState(false);
+
+  // Load user profile from localStorage (set during login)
+  const [userProfile, setUserProfile] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('user_profile')) || { role: 'thana_user', email: '', thana_name: 'Officer' };
+    } catch {
+      return { role: 'thana_user', email: '', thana_name: 'Officer' };
+    }
+  });
   const [loading, setLoading] = useState(false);
 
   // Dynamic Data States
@@ -182,64 +194,45 @@ Please deactivate all DNS routing immediately under Section 66D of the IT Act.
     certWindow.document.close();
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('supabase_session');
+    localStorage.removeItem('supabase_user');
+    localStorage.removeItem('user_profile');
+    supabase.auth.signOut();
+    navigate('/');
+  };
+
   return (
-    <div className="space-y-6">
-      
-      {/* Top Banner and operational tab controls */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-        <div>
-          <h2 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
-            <ShieldCheck className="w-7 h-7 text-indigo-600 stroke-[2.5]" />
-            Ayodhya SafeStay Officer Console
-          </h2>
-          <p className="text-xs text-slate-500 font-semibold mt-1">Multi-jurisdiction Phishing Firewall, Threat Takedowns & Verified Registries.</p>
-        </div>
+    <div className="flex min-h-screen bg-slate-50">
+      {/* Sidebar */}
+      <Sidebar
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        userProfile={userProfile}
+        onCreateUser={() => setShowCreateUser(true)}
+        onLogout={handleLogout}
+      />
 
-        <div className="flex items-center gap-3">
-          {/* Tab Controls */}
-          <div className="flex flex-wrap items-center gap-1.5 p-1 bg-slate-100 rounded-xl">
-            <button 
-              onClick={() => setActiveTab('analytics')}
-              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${activeTab === 'analytics' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-600 hover:text-slate-900'}`}
-            >
-              <RefreshCw className="w-3.5 h-3.5 inline mr-1" /> Analytics View
-            </button>
-            <button 
-              onClick={() => setActiveTab('threats')}
-              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${activeTab === 'threats' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-600 hover:text-slate-900'}`}
-            >
-              <ShieldAlert className="w-3.5 h-3.5 inline mr-1" /> Threats ({suspiciousLinks.length})
-            </button>
-            <button 
-              onClick={() => setActiveTab('properties')}
-              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${activeTab === 'properties' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-600 hover:text-slate-900'}`}
-            >
-              <Building2 className="w-3.5 h-3.5 inline mr-1" /> Properties ({verifiedHotels.length})
-            </button>
-            <button 
-              onClick={() => setActiveTab('reports')}
-              className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${activeTab === 'reports' ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-600 hover:text-slate-900'}`}
-            >
-              <ClipboardList className="w-3.5 h-3.5 inline mr-1" /> Reports ({publicReports.length})
-            </button>
+      {/* Create User Modal */}
+      <CreateUserModal
+        isOpen={showCreateUser}
+        onClose={() => setShowCreateUser(false)}
+        userRole={userProfile?.role}
+      />
+
+      {/* Main Content */}
+      <main className="flex-1 p-6 lg:p-8 space-y-6 overflow-y-auto">
+        
+        {/* Top Header */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+          <div>
+            <h2 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
+              <ShieldCheck className="w-7 h-7 text-indigo-600 stroke-[2.5]" />
+              Ayodhya SafeStay Officer Console
+            </h2>
+            <p className="text-xs text-slate-500 font-semibold mt-1">Multi-jurisdiction Phishing Firewall, Threat Takedowns & Verified Registries.</p>
           </div>
-
-          {/* Logout Button */}
-          <button
-            onClick={() => {
-              // Clear any stored session data
-              localStorage.removeItem('supabase_session');
-              localStorage.removeItem('supabase_user');
-              navigate('/');
-            }}
-            className="flex items-center gap-1.5 px-4 py-2 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 rounded-xl text-xs font-bold transition-all cursor-pointer shadow-sm hover:shadow-md"
-            title="Logout from Officer Console"
-          >
-            <LogOut className="w-3.5 h-3.5" />
-            Logout
-          </button>
         </div>
-      </div>
 
       {/* RENDER ANALYTICS TAB */}
       {activeTab === 'analytics' && (
@@ -503,6 +496,7 @@ Please deactivate all DNS routing immediately under Section 66D of the IT Act.
         </div>
       )}
 
+      </main>
     </div>
   );
 }
