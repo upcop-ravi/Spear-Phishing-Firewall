@@ -19,7 +19,7 @@ function App() {
   }, []);
 
   return (
-    <Router>
+    <Router basename={import.meta.env.DEV ? '/' : '/Spear-Phishing-Firewall'}>
       <div className="min-h-screen bg-slate-50 text-slate-900 font-sans">
         <Routes>
           {/* Public Portal Landing */}
