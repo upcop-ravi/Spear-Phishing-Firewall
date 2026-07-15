@@ -119,3 +119,9 @@ A comprehensive, highly secure web application built for the Uttar Pradesh Polic
   - Previous and Next directional buttons.
   - Interactive page number indicators.
   - Active page index resets automatically back to Page 1 whenever the time scope filters (`dateRange`) are updated.
+
+### 14. Visitor Logs Entries-per-page Selector
+- Added a **"Show [5 | 10 | 20 | 50 | All] entries"** selector dropdown at the top right of the Visitor Logs panel.
+- Selecting an option dynamically limits the visible table rows shown on the screen.
+- Selecting **"All"** displays all visitor logs on a single scrollable viewport.
+- Any change to the selector automatically resets the active page index to Page 1.
