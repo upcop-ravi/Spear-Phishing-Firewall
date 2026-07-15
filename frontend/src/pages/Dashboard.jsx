@@ -105,6 +105,7 @@ export default function Dashboard() {
   const [userSearchQuery, setUserSearchQuery] = useState('');
   const [userPage,        setUserPage]        = useState(1);
   const [userPageSize,    setUserPageSize]    = useState(5);
+  const [visitorPage,     setVisitorPage]     = useState(1);
   const [resetEmail, setResetEmail] = useState('');
   const [resetPassword, setResetPassword] = useState('');
   const [resetFormLoading, setResetFormLoading] = useState(false);
@@ -191,7 +192,10 @@ export default function Dashboard() {
     } finally { setLoading(false); }
   };
 
-  useEffect(() => { fetchDashboardData(); }, [dateRange]);
+  useEffect(() => { 
+    fetchDashboardData(); 
+    setVisitorPage(1);
+  }, [dateRange]);
 
   // ── Helpers ────────────────────────────────────────────────────────────────
   const handleLogout = () => {
@@ -817,28 +821,38 @@ export default function Dashboard() {
               </div>
 
               <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs">
-                    <thead className="bg-slate-50 text-[10px] text-slate-500 uppercase tracking-wider font-bold border-b border-slate-100">
-                      <tr>
-                        <th className="p-4">IP Address</th>
-                        <th className="p-4">Geo Location</th>
-                        <th className="p-4">Session Start</th>
-                        <th className="p-4">Session End</th>
-                        <th className="p-4">Duration</th>
-                        <th className="p-4">Actions</th>
-                        <th className="p-4">Device</th>
-                        <th className="p-4 text-right">Log</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {visitorLogs.length === 0 ? (
-                        <tr>
-                          <td colSpan={8} className="p-8 text-center text-slate-400 font-semibold">
-                            No visitor sessions recorded yet. Browse the public portal to generate logs.
-                          </td>
-                        </tr>
-                      ) : visitorLogs.map(log => (
+                {(() => {
+                  const VISITOR_ITEMS_PER_PAGE = 5;
+                  const totalVisitorItems = visitorLogs.length;
+                  const totalVisitorPages = Math.ceil(totalVisitorItems / VISITOR_ITEMS_PER_PAGE) || 1;
+                  const currentVisitorPage = Math.min(visitorPage, totalVisitorPages);
+                  const visitorStartIndex = (currentVisitorPage - 1) * VISITOR_ITEMS_PER_PAGE;
+                  const paginatedVisitorLogs = visitorLogs.slice(visitorStartIndex, visitorStartIndex + VISITOR_ITEMS_PER_PAGE);
+
+                  return (
+                    <>
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left text-xs">
+                          <thead className="bg-slate-50 text-[10px] text-slate-500 uppercase tracking-wider font-bold border-b border-slate-100">
+                            <tr>
+                              <th className="p-4">IP Address</th>
+                              <th className="p-4">Geo Location</th>
+                              <th className="p-4">Session Start</th>
+                              <th className="p-4">Session End</th>
+                              <th className="p-4">Duration</th>
+                              <th className="p-4">Actions</th>
+                              <th className="p-4">Device</th>
+                              <th className="p-4 text-right">Log</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {paginatedVisitorLogs.length === 0 ? (
+                              <tr>
+                                <td colSpan={8} className="p-8 text-center text-slate-400 font-semibold">
+                                  No visitor sessions recorded yet. Browse the public portal to generate logs.
+                                </td>
+                              </tr>
+                            ) : paginatedVisitorLogs.map(log => (
                         <React.Fragment key={log.id}>
                           <tr
                             className="border-b border-slate-100 hover:bg-violet-50/30 transition-colors font-medium text-slate-700 cursor-pointer"
@@ -887,7 +901,56 @@ export default function Dashboard() {
                     </tbody>
                   </table>
                 </div>
-              </div>
+
+                {totalVisitorPages > 1 && (
+                  <div className="p-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-50/50">
+                    <p className="text-[11px] text-slate-500 font-semibold">
+                      Showing <span className="font-extrabold text-slate-800">{visitorStartIndex + 1}</span> to{' '}
+                      <span className="font-extrabold text-slate-800">
+                        {Math.min(visitorStartIndex + VISITOR_ITEMS_PER_PAGE, totalVisitorItems)}
+                      </span>{' '}
+                      of <span className="font-extrabold text-slate-800">{totalVisitorItems}</span> sessions
+                    </p>
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => setVisitorPage(p => Math.max(p - 1, 1))}
+                        disabled={currentVisitorPage === 1}
+                        className="px-2.5 py-1.5 rounded-lg border border-slate-200 text-[11px] font-bold bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:hover:bg-white cursor-pointer transition-colors"
+                      >
+                        Previous
+                      </button>
+                      
+                      {Array.from({ length: totalVisitorPages }, (_, i) => i + 1).map((pg) => (
+                        <button
+                          type="button"
+                          key={pg}
+                          onClick={() => setVisitorPage(pg)}
+                          className={`w-7 h-7 flex items-center justify-center rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+                            currentVisitorPage === pg
+                              ? 'bg-indigo-600 text-white shadow-sm font-extrabold'
+                              : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
+                          }`}
+                        >
+                          {pg}
+                        </button>
+                      ))}
+
+                      <button
+                        type="button"
+                        onClick={() => setVisitorPage(p => Math.min(p + 1, totalVisitorPages))}
+                        disabled={currentVisitorPage === totalVisitorPages}
+                        className="px-2.5 py-1.5 rounded-lg border border-slate-200 text-[11px] font-bold bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:hover:bg-white cursor-pointer transition-colors"
+                      >
+                        Next
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </>
+            );
+          })()}
+        </div>
             </div>
           )}
 
