@@ -126,6 +126,10 @@ export default function Dashboard() {
         supabase.from('public_reports').select('*'),
         supabase.from('visitor_logs').select('*')
       ]);
+      if (linksRes.error) throw linksRes.error;
+      if (hotelsRes.error) throw hotelsRes.error;
+      if (reportsRes.error) throw reportsRes.error;
+      if (logsRes.error) throw logsRes.error;
       if (linksRes.data)  setSuspiciousLinks(linksRes.data);
       if (hotelsRes.data) setVerifiedHotels(hotelsRes.data);
       if (reportsRes.data) setPublicReports(reportsRes.data);
@@ -385,11 +389,11 @@ export default function Dashboard() {
 
               {/* KPI Cards */}
               <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-3 md:gap-4">
-                <KpiCard title="Verified Properties"    value={kpis.totalHotels}         icon={<Building2 />}    color="text-indigo-600"  bg="bg-indigo-50" tooltip="Total registered accommodations in Ayodhya" />
-                <KpiCard title="Active Phishing Sites"  value={kpis.activeThreats}        icon={<ShieldAlert />}  color="text-red-600"     bg="bg-red-50"    highlight tooltip="Scam hotel booking portals currently active" />
-                <KpiCard title="Takedowns Pending"      value={kpis.takedownInitiated}    icon={<Send />}         color="text-amber-600"   bg="bg-amber-50" tooltip="URLs under current domain takedown process" />
-                <KpiCard title="Deactivated Domains"    value={kpis.totalBlocked}         icon={<ShieldCheck />}  color="text-emerald-600" bg="bg-emerald-50" tooltip="Phishing sites successfully blocked/deactivated" />
-                <KpiCard title="Crowdsourced Reports"   value={kpis.totalReports}         icon={<ClipboardList />}color="text-blue-600"    bg="bg-blue-50" tooltip="Total suspected scam domains submitted by citizens" />
+                <KpiCard title="Verified Properties"    value={kpis.totalHotels}         icon={<Building2 />}    color="text-indigo-600"  bg="bg-indigo-50" tooltip="Total registered accommodations in Ayodhya" onClick={() => setActiveTab('properties')} />
+                <KpiCard title="Active Phishing Sites"  value={kpis.activeThreats}        icon={<ShieldAlert />}  color="text-red-600"     bg="bg-red-50"    highlight tooltip="Scam hotel booking portals currently active" onClick={() => setActiveTab('threats')} />
+                <KpiCard title="Takedowns Pending"      value={kpis.takedownInitiated}    icon={<Send />}         color="text-amber-600"   bg="bg-amber-50" tooltip="URLs under current domain takedown process" onClick={() => setActiveTab('threats')} />
+                <KpiCard title="Deactivated Domains"    value={kpis.totalBlocked}         icon={<ShieldCheck />}  color="text-emerald-600" bg="bg-emerald-50" tooltip="Phishing sites successfully blocked/deactivated" onClick={() => setActiveTab('threats')} />
+                <KpiCard title="Crowdsourced Reports"   value={kpis.totalReports}         icon={<ClipboardList />}color="text-blue-600"    bg="bg-blue-50" tooltip="Total suspected scam domains submitted by citizens" onClick={() => setActiveTab('reports')} />
               </div>
 
               {/* Charts */}
@@ -827,15 +831,16 @@ export default function Dashboard() {
 }
 
 // ── Reusable KPI card ─────────────────────────────────────────────────────────
-function KpiCard({ title, value, icon, color, bg, highlight, tooltip }) {
+function KpiCard({ title, value, icon, color, bg, highlight, tooltip, onClick }) {
   return (
     <div 
       data-tooltip={tooltip}
       data-tooltip-position="bottom"
-      className={`p-4 rounded-2xl border transition-all duration-300 hover:-translate-y-0.5 shadow-sm ${
+      onClick={onClick}
+      className={`p-4 rounded-2xl border transition-all duration-300 hover:-translate-y-0.5 shadow-sm cursor-pointer hover:shadow-md ${
         highlight
-          ? 'bg-gradient-to-br from-indigo-600 to-indigo-800 text-white border-transparent shadow-indigo-600/10'
-          : 'bg-white border-slate-200'
+          ? 'bg-gradient-to-br from-indigo-600 to-indigo-800 text-white border-transparent shadow-indigo-600/10 hover:brightness-110'
+          : 'bg-white border-slate-200 hover:border-slate-300'
       }`}
     >
       <div className="flex items-center justify-between mb-3">

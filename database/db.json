@@ -309,6 +309,506 @@
       "reported_url": "http://fake-ayodhya-hotel.com",
       "description": "Fake booking portal requesting direct UPI payment.",
       "status": "Pending"
+    },
+    {
+      "id": "p_dummy_1",
+      "reporter_name": "Anonymous",
+      "reported_url": "https://1-cheap-ayodhya-stay.com/confirm-booking",
+      "description": "Clone booking site with fake phone numbers. Does not match official hotel website list.",
+      "status": "Reviewed",
+      "submitted_at": "2026-07-09T11:19:26.736Z",
+      "created_at": "2026-07-09T11:19:26.736Z",
+      "detected_on": "2026-07-09T11:19:26.736Z"
+    },
+    {
+      "id": "p_dummy_2",
+      "reporter_name": "Suresh Patel",
+      "reported_url": "https://2-cheap-ayodhya-stay.com/rooms",
+      "description": "Received a WhatsApp message claiming 50% discount on rooms. Asked to make payment via direct UPI QR code.",
+      "status": "Pending",
+      "submitted_at": "2026-07-06T20:04:21.875Z",
+      "created_at": "2026-07-06T20:04:21.875Z",
+      "detected_on": "2026-07-06T20:04:21.875Z"
+    },
+    {
+      "id": "p_dummy_3",
+      "reporter_name": "Anonymous",
+      "reported_url": "https://3-online-room-booking-ayodhya.net/special-discount",
+      "description": "Received a WhatsApp message claiming 50% discount on rooms. Asked to make payment via direct UPI QR code.",
+      "status": "Pending",
+      "submitted_at": "2026-07-13T11:01:29.530Z",
+      "created_at": "2026-07-13T11:01:29.530Z",
+      "detected_on": "2026-07-13T11:01:29.530Z"
+    },
+    {
+      "id": "p_dummy_4",
+      "reporter_name": "Rohan Nair",
+      "reported_url": "https://4-sacred-stay-ayodhya.com/pay-advance",
+      "description": "Pilgrim group defrauded of ₹15,000 via this booking portal. No booking receipt generated.",
+      "status": "Reviewed",
+      "submitted_at": "2026-07-14T17:02:24.000Z",
+      "created_at": "2026-07-14T17:02:24.000Z",
+      "detected_on": "2026-07-14T17:02:24.000Z"
+    },
+    {
+      "id": "p_dummy_5",
+      "reporter_name": "Aarav Mishra",
+      "reported_url": "https://5-sacred-stay-ayodhya.com/vip-darshan-pass",
+      "description": "Website asking for credit card details and OTP on unsecure page to confirm spot booking.",
+      "status": "Reviewed",
+      "submitted_at": "2026-07-13T03:15:02.039Z",
+      "created_at": "2026-07-13T03:15:02.039Z",
+      "detected_on": "2026-07-13T03:15:02.039Z"
+    },
+    {
+      "id": "p_dummy_6",
+      "reporter_name": "Aditya Nair",
+      "reported_url": "https://6-online-room-booking-ayodhya.net/pay-advance",
+      "description": "Suspicious domain demanding immediate UPI transfer for a deluxe suite near Ram Janmabhoomi.",
+      "status": "Reviewed",
+      "submitted_at": "2026-07-06T11:28:02.894Z",
+      "created_at": "2026-07-06T11:28:02.894Z",
+      "detected_on": "2026-07-06T11:28:02.894Z"
+    },
+    {
+      "id": "p_dummy_7",
+      "reporter_name": "Rohan Trivedi",
+      "reported_url": "https://7-ramayana-palace-verification.in/rooms",
+      "description": "Direct payment link sent via WhatsApp chat claiming to be the manager of the guest house.",
+      "status": "Pending",
+      "submitted_at": "2026-07-12T04:27:00.288Z",
+      "created_at": "2026-07-12T04:27:00.288Z",
+      "detected_on": "2026-07-12T04:27:00.288Z"
+    },
+    {
+      "id": "p_dummy_8",
+      "reporter_name": "Vikram Trivedi",
+      "reported_url": "https://8-hanumangarhi-dharmshala.org/pay-advance",
+      "description": "They requested full advance payment for booking. When asked for police verification, they blocked me.",
+      "status": "Pending",
+      "submitted_at": "2026-07-08T09:56:15.271Z",
+      "created_at": "2026-07-08T09:56:15.271Z",
+      "detected_on": "2026-07-08T09:56:15.271Z"
+    },
+    {
+      "id": "p_dummy_9",
+      "reporter_name": "Neha Trivedi",
+      "reported_url": "https://9-ramayana-palace-verification.in/confirm-booking",
+      "description": "Direct payment link sent via WhatsApp chat claiming to be the manager of the guest house.",
+      "status": "Pending",
+      "submitted_at": "2026-07-11T13:28:48.808Z",
+      "created_at": "2026-07-11T13:28:48.808Z",
+      "detected_on": "2026-07-11T13:28:48.808Z"
+    },
+    {
+      "id": "p_dummy_10",
+      "reporter_name": "Neha Joshi",
+      "reported_url": "https://10-sacred-stay-ayodhya.com/special-discount",
+      "description": "Demanding advance token money to secure room for VIP Darshan dates.",
+      "status": "Reviewed",
+      "submitted_at": "2026-07-14T01:20:09.233Z",
+      "created_at": "2026-07-14T01:20:09.233Z",
+      "detected_on": "2026-07-14T01:20:09.233Z"
+    },
+    {
+      "id": "p_dummy_11",
+      "reporter_name": "Neha Kumar",
+      "reported_url": "https://11-ramjanmabhoomihotels.org/vip-darshan-pass",
+      "description": "Demanding advance token money to secure room for VIP Darshan dates.",
+      "status": "Pending",
+      "submitted_at": "2026-07-14T13:14:53.380Z",
+      "created_at": "2026-07-14T13:14:53.380Z",
+      "detected_on": "2026-07-14T13:14:53.380Z"
+    },
+    {
+      "id": "p_dummy_12",
+      "reporter_name": "Suresh Kumar",
+      "reported_url": "https://12-booking-ayodhya-ramayana.com/special-discount",
+      "description": "This website is a direct clone of the official Ramayana Hotel booking page. Rates are unusually low.",
+      "status": "Reviewed",
+      "submitted_at": "2026-07-12T07:15:35.167Z",
+      "created_at": "2026-07-12T07:15:35.167Z",
+      "detected_on": "2026-07-12T07:15:35.167Z"
+    },
+    {
+      "id": "p_dummy_13",
+      "reporter_name": "Vijay Kumar",
+      "reported_url": "https://13-ramjanmabhoomihotels.org/rooms",
+      "description": "They requested full advance payment for booking. When asked for police verification, they blocked me.",
+      "status": "Pending",
+      "submitted_at": "2026-07-05T20:45:04.800Z",
+      "created_at": "2026-07-05T20:45:04.800Z",
+      "detected_on": "2026-07-05T20:45:04.800Z"
+    },
+    {
+      "id": "p_dummy_14",
+      "reporter_name": "Vikram Singh",
+      "reported_url": "https://14-booking-ayodhya-ramayana.com/pay-advance",
+      "description": "Received a WhatsApp message claiming 50% discount on rooms. Asked to make payment via direct UPI QR code.",
+      "status": "Pending",
+      "submitted_at": "2026-07-08T01:17:14.477Z",
+      "created_at": "2026-07-08T01:17:14.477Z",
+      "detected_on": "2026-07-08T01:17:14.477Z"
+    },
+    {
+      "id": "p_dummy_15",
+      "reporter_name": "Vikram Singh",
+      "reported_url": "https://15-saryu-river-retreats.in/special-discount",
+      "description": "Direct payment link sent via WhatsApp chat claiming to be the manager of the guest house.",
+      "status": "Pending",
+      "submitted_at": "2026-07-06T19:06:33.266Z",
+      "created_at": "2026-07-06T19:06:33.266Z",
+      "detected_on": "2026-07-06T19:06:33.266Z"
+    },
+    {
+      "id": "p_dummy_16",
+      "reporter_name": "Neha Singh",
+      "reported_url": "https://16-ramjanmabhoomihotels.org/confirm-booking",
+      "description": "Demanding advance token money to secure room for VIP Darshan dates.",
+      "status": "Pending",
+      "submitted_at": "2026-07-10T10:16:19.820Z",
+      "created_at": "2026-07-10T10:16:19.820Z",
+      "detected_on": "2026-07-10T10:16:19.820Z"
+    },
+    {
+      "id": "p_dummy_17",
+      "reporter_name": "Aarav Trivedi",
+      "reported_url": "https://17-ramayana-palace-verification.in/vip-darshan-pass",
+      "description": "Fake hotel booking aggregator page offering heavy discounts on all premium Ayodhya hotels.",
+      "status": "Reviewed",
+      "submitted_at": "2026-07-11T11:56:53.054Z",
+      "created_at": "2026-07-11T11:56:53.054Z",
+      "detected_on": "2026-07-11T11:56:53.054Z"
+    },
+    {
+      "id": "p_dummy_18",
+      "reporter_name": "Sai Trivedi",
+      "reported_url": "https://18-ramjanmabhoomihotels.org/pay-advance",
+      "description": "This website is a direct clone of the official Ramayana Hotel booking page. Rates are unusually low.",
+      "status": "Pending",
+      "submitted_at": "2026-07-05T22:59:54.516Z",
+      "created_at": "2026-07-05T22:59:54.516Z",
+      "detected_on": "2026-07-05T22:59:54.516Z"
+    },
+    {
+      "id": "p_dummy_19",
+      "reporter_name": "Aarav Gupta",
+      "reported_url": "https://19-ramjanmabhoomihotels.org/vip-darshan-pass",
+      "description": "Received a WhatsApp message claiming 50% discount on rooms. Asked to make payment via direct UPI QR code.",
+      "status": "Reviewed",
+      "submitted_at": "2026-07-09T17:55:58.132Z",
+      "created_at": "2026-07-09T17:55:58.132Z",
+      "detected_on": "2026-07-09T17:55:58.132Z"
+    },
+    {
+      "id": "p_dummy_20",
+      "reporter_name": "Ananya Trivedi",
+      "reported_url": "https://20-booking-ayodhya-ramayana.com/special-discount",
+      "description": "Suspicious domain demanding immediate UPI transfer for a deluxe suite near Ram Janmabhoomi.",
+      "status": "Pending",
+      "submitted_at": "2026-07-13T22:35:55.983Z",
+      "created_at": "2026-07-13T22:35:55.983Z",
+      "detected_on": "2026-07-13T22:35:55.983Z"
+    },
+    {
+      "id": "p_dummy_21",
+      "reporter_name": "Anonymous",
+      "reported_url": "https://21-booking-ayodhya-ramayana.com/pay-advance",
+      "description": "Demanding advance token money to secure room for VIP Darshan dates.",
+      "status": "Reviewed",
+      "submitted_at": "2026-07-06T13:14:59.897Z",
+      "created_at": "2026-07-06T13:14:59.897Z",
+      "detected_on": "2026-07-06T13:14:59.897Z"
+    },
+    {
+      "id": "p_dummy_22",
+      "reporter_name": "Riya Trivedi",
+      "reported_url": "https://22-online-room-booking-ayodhya.net/vip-darshan-pass",
+      "description": "Fake hotel booking aggregator page offering heavy discounts on all premium Ayodhya hotels.",
+      "status": "Pending",
+      "submitted_at": "2026-07-11T20:11:33.693Z",
+      "created_at": "2026-07-11T20:11:33.693Z",
+      "detected_on": "2026-07-11T20:11:33.693Z"
+    },
+    {
+      "id": "p_dummy_23",
+      "reporter_name": "Ananya Pandey",
+      "reported_url": "https://23-hanumangarhi-dharmshala.org/vip-darshan-pass",
+      "description": "Received a WhatsApp message claiming 50% discount on rooms. Asked to make payment via direct UPI QR code.",
+      "status": "Pending",
+      "submitted_at": "2026-07-06T11:45:28.095Z",
+      "created_at": "2026-07-06T11:45:28.095Z",
+      "detected_on": "2026-07-06T11:45:28.095Z"
+    },
+    {
+      "id": "p_dummy_24",
+      "reporter_name": "Anonymous",
+      "reported_url": "https://24-ayodhya-darshan-suites.co.in/book-now",
+      "description": "They requested full advance payment for booking. When asked for police verification, they blocked me.",
+      "status": "Reviewed",
+      "submitted_at": "2026-07-14T10:53:32.190Z",
+      "created_at": "2026-07-14T10:53:32.190Z",
+      "detected_on": "2026-07-14T10:53:32.190Z"
+    },
+    {
+      "id": "p_dummy_25",
+      "reporter_name": "Vijay Kumar",
+      "reported_url": "https://25-saryu-river-retreats.in/rooms",
+      "description": "Pilgrim group defrauded of ₹15,000 via this booking portal. No booking receipt generated.",
+      "status": "Reviewed",
+      "submitted_at": "2026-07-13T21:35:35.807Z",
+      "created_at": "2026-07-13T21:35:35.807Z",
+      "detected_on": "2026-07-13T21:35:35.807Z"
+    },
+    {
+      "id": "p_dummy_26",
+      "reporter_name": "Rajesh Nair",
+      "reported_url": "https://26-hanumangarhi-dharmshala.org/rooms",
+      "description": "Received a WhatsApp message claiming 50% discount on rooms. Asked to make payment via direct UPI QR code.",
+      "status": "Pending",
+      "submitted_at": "2026-07-06T13:53:13.816Z",
+      "created_at": "2026-07-06T13:53:13.816Z",
+      "detected_on": "2026-07-06T13:53:13.816Z"
+    },
+    {
+      "id": "p_dummy_27",
+      "reporter_name": "Aarav Nair",
+      "reported_url": "https://27-booking-ayodhya-ramayana.com/pay-advance",
+      "description": "Received a WhatsApp message claiming 50% discount on rooms. Asked to make payment via direct UPI QR code.",
+      "status": "Reviewed",
+      "submitted_at": "2026-07-15T10:27:57.665Z",
+      "created_at": "2026-07-15T10:27:57.665Z",
+      "detected_on": "2026-07-15T10:27:57.665Z"
+    },
+    {
+      "id": "p_dummy_28",
+      "reporter_name": "Vijay Sharma",
+      "reported_url": "https://28-online-room-booking-ayodhya.net/rooms",
+      "description": "Suspicious domain demanding immediate UPI transfer for a deluxe suite near Ram Janmabhoomi.",
+      "status": "Reviewed",
+      "submitted_at": "2026-07-08T05:02:10.055Z",
+      "created_at": "2026-07-08T05:02:10.055Z",
+      "detected_on": "2026-07-08T05:02:10.055Z"
+    },
+    {
+      "id": "p_dummy_29",
+      "reporter_name": "Amit Pandey",
+      "reported_url": "https://29-ramjanmabhoomihotels.org/special-discount",
+      "description": "Website asking for credit card details and OTP on unsecure page to confirm spot booking.",
+      "status": "Pending",
+      "submitted_at": "2026-07-12T18:03:21.185Z",
+      "created_at": "2026-07-12T18:03:21.185Z",
+      "detected_on": "2026-07-12T18:03:21.185Z"
+    },
+    {
+      "id": "p_dummy_30",
+      "reporter_name": "Anonymous",
+      "reported_url": "https://30-hanumangarhi-dharmshala.org/book-now",
+      "description": "Fake hotel booking aggregator page offering heavy discounts on all premium Ayodhya hotels.",
+      "status": "Reviewed",
+      "submitted_at": "2026-07-15T16:25:50.514Z",
+      "created_at": "2026-07-15T16:25:50.514Z",
+      "detected_on": "2026-07-15T16:25:50.514Z"
+    },
+    {
+      "id": "p_dummy_31",
+      "reporter_name": "Anonymous",
+      "reported_url": "https://31-cheap-ayodhya-stay.com/special-discount",
+      "description": "Demanding advance token money to secure room for VIP Darshan dates.",
+      "status": "Pending",
+      "submitted_at": "2026-07-07T04:45:03.529Z",
+      "created_at": "2026-07-07T04:45:03.529Z",
+      "detected_on": "2026-07-07T04:45:03.529Z"
+    },
+    {
+      "id": "p_dummy_32",
+      "reporter_name": "Suresh Verma",
+      "reported_url": "https://32-hanumangarhi-dharmshala.org/special-discount",
+      "description": "This website is a direct clone of the official Ramayana Hotel booking page. Rates are unusually low.",
+      "status": "Pending",
+      "submitted_at": "2026-07-08T17:26:25.158Z",
+      "created_at": "2026-07-08T17:26:25.158Z",
+      "detected_on": "2026-07-08T17:26:25.158Z"
+    },
+    {
+      "id": "p_dummy_33",
+      "reporter_name": "Riya Nair",
+      "reported_url": "https://33-ramjanmabhoomihotels.org/vip-darshan-pass",
+      "description": "Fake hotel booking aggregator page offering heavy discounts on all premium Ayodhya hotels.",
+      "status": "Reviewed",
+      "submitted_at": "2026-07-13T01:34:05.539Z",
+      "created_at": "2026-07-13T01:34:05.539Z",
+      "detected_on": "2026-07-13T01:34:05.539Z"
+    },
+    {
+      "id": "p_dummy_34",
+      "reporter_name": "Priya Yadav",
+      "reported_url": "https://34-booking-ayodhya-ramayana.com/pay-advance",
+      "description": "Demanding advance token money to secure room for VIP Darshan dates.",
+      "status": "Reviewed",
+      "submitted_at": "2026-07-10T22:32:42.468Z",
+      "created_at": "2026-07-10T22:32:42.468Z",
+      "detected_on": "2026-07-10T22:32:42.468Z"
+    },
+    {
+      "id": "p_dummy_35",
+      "reporter_name": "Aditya Verma",
+      "reported_url": "https://35-ramayana-palace-verification.in/pay-advance",
+      "description": "Website asking for credit card details and OTP on unsecure page to confirm spot booking.",
+      "status": "Reviewed",
+      "submitted_at": "2026-07-06T01:47:24.665Z",
+      "created_at": "2026-07-06T01:47:24.665Z",
+      "detected_on": "2026-07-06T01:47:24.665Z"
+    },
+    {
+      "id": "p_dummy_36",
+      "reporter_name": "Rajesh Trivedi",
+      "reported_url": "https://36-ramjanmabhoomihotels.org/confirm-booking",
+      "description": "Demanding advance token money to secure room for VIP Darshan dates.",
+      "status": "Pending",
+      "submitted_at": "2026-07-09T20:29:56.839Z",
+      "created_at": "2026-07-09T20:29:56.839Z",
+      "detected_on": "2026-07-09T20:29:56.839Z"
+    },
+    {
+      "id": "p_dummy_37",
+      "reporter_name": "Aditya Pandey",
+      "reported_url": "https://37-booking-ayodhya-ramayana.com/book-now",
+      "description": "Received a WhatsApp message claiming 50% discount on rooms. Asked to make payment via direct UPI QR code.",
+      "status": "Pending",
+      "submitted_at": "2026-07-07T20:14:43.747Z",
+      "created_at": "2026-07-07T20:14:43.747Z",
+      "detected_on": "2026-07-07T20:14:43.747Z"
+    },
+    {
+      "id": "p_dummy_38",
+      "reporter_name": "Sunil Nair",
+      "reported_url": "https://38-ayodhyastay-offers.net/special-discount",
+      "description": "Demanding advance token money to secure room for VIP Darshan dates.",
+      "status": "Pending",
+      "submitted_at": "2026-07-06T23:12:03.476Z",
+      "created_at": "2026-07-06T23:12:03.476Z",
+      "detected_on": "2026-07-06T23:12:03.476Z"
+    },
+    {
+      "id": "p_dummy_39",
+      "reporter_name": "Vikram Yadav",
+      "reported_url": "https://39-ayodhyastay-offers.net/pay-advance",
+      "description": "They requested full advance payment for booking. When asked for police verification, they blocked me.",
+      "status": "Pending",
+      "submitted_at": "2026-07-12T09:32:25.578Z",
+      "created_at": "2026-07-12T09:32:25.578Z",
+      "detected_on": "2026-07-12T09:32:25.578Z"
+    },
+    {
+      "id": "p_dummy_40",
+      "reporter_name": "Anonymous",
+      "reported_url": "https://40-hanumangarhi-dharmshala.org/pay-advance",
+      "description": "Pilgrim group defrauded of ₹15,000 via this booking portal. No booking receipt generated.",
+      "status": "Reviewed",
+      "submitted_at": "2026-07-08T21:05:10.881Z",
+      "created_at": "2026-07-08T21:05:10.881Z",
+      "detected_on": "2026-07-08T21:05:10.881Z"
+    },
+    {
+      "id": "p_dummy_41",
+      "reporter_name": "Ananya Kumar",
+      "reported_url": "https://41-hanumangarhi-dharmshala.org/confirm-booking",
+      "description": "Pilgrim group defrauded of ₹15,000 via this booking portal. No booking receipt generated.",
+      "status": "Pending",
+      "submitted_at": "2026-07-14T20:27:05.213Z",
+      "created_at": "2026-07-14T20:27:05.213Z",
+      "detected_on": "2026-07-14T20:27:05.213Z"
+    },
+    {
+      "id": "p_dummy_42",
+      "reporter_name": "Aarav Kumar",
+      "reported_url": "https://42-sacred-stay-ayodhya.com/book-now",
+      "description": "Suspicious domain demanding immediate UPI transfer for a deluxe suite near Ram Janmabhoomi.",
+      "status": "Pending",
+      "submitted_at": "2026-07-15T06:52:40.422Z",
+      "created_at": "2026-07-15T06:52:40.422Z",
+      "detected_on": "2026-07-15T06:52:40.422Z"
+    },
+    {
+      "id": "p_dummy_43",
+      "reporter_name": "Aditya Kumar",
+      "reported_url": "https://43-cheap-ayodhya-stay.com/confirm-booking",
+      "description": "Pilgrim group defrauded of ₹15,000 via this booking portal. No booking receipt generated.",
+      "status": "Pending",
+      "submitted_at": "2026-07-09T12:40:32.870Z",
+      "created_at": "2026-07-09T12:40:32.870Z",
+      "detected_on": "2026-07-09T12:40:32.870Z"
+    },
+    {
+      "id": "p_dummy_44",
+      "reporter_name": "Rohan Verma",
+      "reported_url": "https://44-sacred-stay-ayodhya.com/vip-darshan-pass",
+      "description": "Fake hotel booking aggregator page offering heavy discounts on all premium Ayodhya hotels.",
+      "status": "Pending",
+      "submitted_at": "2026-07-13T02:40:09.053Z",
+      "created_at": "2026-07-13T02:40:09.053Z",
+      "detected_on": "2026-07-13T02:40:09.053Z"
+    },
+    {
+      "id": "p_dummy_45",
+      "reporter_name": "Anonymous",
+      "reported_url": "https://45-ramjanmabhoomihotels.org/book-now",
+      "description": "Website asking for credit card details and OTP on unsecure page to confirm spot booking.",
+      "status": "Reviewed",
+      "submitted_at": "2026-07-06T15:31:01.621Z",
+      "created_at": "2026-07-06T15:31:01.621Z",
+      "detected_on": "2026-07-06T15:31:01.621Z"
+    },
+    {
+      "id": "p_dummy_46",
+      "reporter_name": "Anonymous",
+      "reported_url": "https://46-online-room-booking-ayodhya.net/pay-advance",
+      "description": "Pilgrim group defrauded of ₹15,000 via this booking portal. No booking receipt generated.",
+      "status": "Pending",
+      "submitted_at": "2026-07-13T18:05:36.348Z",
+      "created_at": "2026-07-13T18:05:36.348Z",
+      "detected_on": "2026-07-13T18:05:36.348Z"
+    },
+    {
+      "id": "p_dummy_47",
+      "reporter_name": "Vikram Verma",
+      "reported_url": "https://47-hanumangarhi-dharmshala.org/rooms",
+      "description": "Website asking for credit card details and OTP on unsecure page to confirm spot booking.",
+      "status": "Pending",
+      "submitted_at": "2026-07-11T14:57:08.279Z",
+      "created_at": "2026-07-11T14:57:08.279Z",
+      "detected_on": "2026-07-11T14:57:08.279Z"
+    },
+    {
+      "id": "p_dummy_48",
+      "reporter_name": "Rajesh Patel",
+      "reported_url": "https://48-ramjanmabhoomihotels.org/pay-advance",
+      "description": "Received a WhatsApp message claiming 50% discount on rooms. Asked to make payment via direct UPI QR code.",
+      "status": "Pending",
+      "submitted_at": "2026-07-06T03:09:17.033Z",
+      "created_at": "2026-07-06T03:09:17.033Z",
+      "detected_on": "2026-07-06T03:09:17.033Z"
+    },
+    {
+      "id": "p_dummy_49",
+      "reporter_name": "Vijay Trivedi",
+      "reported_url": "https://49-cheap-ayodhya-stay.com/book-now",
+      "description": "Suspicious domain demanding immediate UPI transfer for a deluxe suite near Ram Janmabhoomi.",
+      "status": "Pending",
+      "submitted_at": "2026-07-08T05:55:32.373Z",
+      "created_at": "2026-07-08T05:55:32.373Z",
+      "detected_on": "2026-07-08T05:55:32.373Z"
+    },
+    {
+      "id": "p_dummy_50",
+      "reporter_name": "Aditya Yadav",
+      "reported_url": "https://50-ramayana-palace-verification.in/vip-darshan-pass",
+      "description": "This website is a direct clone of the official Ramayana Hotel booking page. Rates are unusually low.",
+      "status": "Pending",
+      "submitted_at": "2026-07-08T19:26:04.665Z",
+      "created_at": "2026-07-08T19:26:04.665Z",
+      "detected_on": "2026-07-08T19:26:04.665Z"
     }
   ],
   "spam_websites": [],
