@@ -106,6 +106,7 @@ export default function Dashboard() {
   const [userPage,        setUserPage]        = useState(1);
   const [userPageSize,    setUserPageSize]    = useState(5);
   const [visitorPage,     setVisitorPage]     = useState(1);
+  const [visitorPageSize, setVisitorPageSize] = useState(5);
   const [resetEmail, setResetEmail] = useState('');
   const [resetPassword, setResetPassword] = useState('');
   const [resetFormLoading, setResetFormLoading] = useState(false);
@@ -797,9 +798,30 @@ export default function Dashboard() {
                     <p className="text-[11px] text-slate-400 font-semibold mt-0.5">Real-time session tracking — IP, IST times, geo-location, actions</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  <span className="text-[11px] font-bold text-emerald-600">{visitorLogs.length} Sessions</span>
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-1.5 text-xs text-slate-500 font-semibold">
+                    <span>Show</span>
+                    <select
+                      value={visitorPageSize}
+                      onChange={(e) => {
+                        setVisitorPageSize(Number(e.target.value));
+                        setVisitorPage(1);
+                      }}
+                      className="bg-slate-50 border border-slate-200 text-slate-700 py-1 px-2 rounded-lg text-[11px] font-bold focus:outline-none cursor-pointer"
+                    >
+                      <option value={5}>5</option>
+                      <option value={10}>10</option>
+                      <option value={20}>20</option>
+                      <option value={50}>50</option>
+                      <option value={999999}>All</option>
+                    </select>
+                    <span>entries</span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="text-[11px] font-bold text-emerald-600">{visitorLogs.length} Sessions</span>
+                  </div>
                 </div>
               </div>
 
@@ -822,7 +844,7 @@ export default function Dashboard() {
 
               <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                 {(() => {
-                  const VISITOR_ITEMS_PER_PAGE = 5;
+                  const VISITOR_ITEMS_PER_PAGE = visitorPageSize;
                   const totalVisitorItems = visitorLogs.length;
                   const totalVisitorPages = Math.ceil(totalVisitorItems / VISITOR_ITEMS_PER_PAGE) || 1;
                   const currentVisitorPage = Math.min(visitorPage, totalVisitorPages);
