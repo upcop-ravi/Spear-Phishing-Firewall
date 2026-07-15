@@ -24,30 +24,28 @@ function App() {
 
   return (
     <Router basename={basename}>
-      <div className="min-h-screen bg-slate-50 text-slate-900 font-sans">
-        <Routes>
-          {/* Public Portal Landing */}
-          <Route path="/" element={<Home />} />
-          
-          {/* Secure QR Verification */}
-          <Route path="/verify/:hotel_id" element={<SecureQRVerification />} />
-          
-          {/* Login Gate */}
-          <Route path="/login" element={<Login />} />
-          
-          {/* Property Registration */}
-          <Route path="/register" element={<Register />} />
-          
-          {/* Protected Analytics & Management Dashboard */}
-          <Route 
-            path="/dashboard" 
-            element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />} 
-          />
-          
-          {/* Fallback */}
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
-      </div>
+      <Routes>
+        {/* Public Portal Landing */}
+        <Route path="/" element={<Home />} />
+        
+        {/* Secure QR Verification */}
+        <Route path="/verify/:hotel_id" element={<SecureQRVerification />} />
+        
+        {/* Login Gate */}
+        <Route path="/login" element={<Login />} />
+        
+        {/* Property Registration */}
+        <Route path="/register" element={<Register />} />
+        
+        {/* Protected Analytics & Management Dashboard (full-screen layout) */}
+        <Route 
+          path="/dashboard" 
+          element={isAuthenticated ? <Dashboard /> : <Navigate to="/login" />} 
+        />
+        
+        {/* Fallback */}
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
     </Router>
   );
 }
