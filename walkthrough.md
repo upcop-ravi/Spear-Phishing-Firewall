@@ -67,3 +67,10 @@ A comprehensive, highly secure web application built for the Uttar Pradesh Polic
 ### 5. Sidebar Navigation Scrollbar Cleanup
 - Hidden both the horizontal and vertical scrollbars from the left sidebar navigation panel using a custom `.no-scrollbar` utility in [index.css](file:///e:/SUPER%20250%20PROJECT/Spear_Phishing_Firewall/Spear-Phishing-Firewall/frontend/src/index.css).
 - Added `overflow-x-hidden` to prevent accidental layout shifts and ensure the sidebar remains visually clean and native-feeling across all device displays.
+
+### 6. View Users Tab with Activate/Deactivate Toggle
+- Promoted and implemented the `users` tab into a fully functional **View Users** dashboard panel accessible to both `admin` and `super_admin` roles.
+- Loaded all officers and administrators from the `system_users` directory (supported by the local `db.json` and Supabase).
+- Rendered user records in a clean table layout listing Thana jurisdiction, official email address, CUG mobile number, role scopes, and status.
+- Added an interactive **activate/deactivate pill toggle switch** for each user that updates the account's active status dynamically.
+- Implemented a real-time **search input filter** enabling administrators to quickly search users by name (Thana), email ID, and CUG mobile numbers.
