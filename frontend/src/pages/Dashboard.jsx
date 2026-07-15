@@ -61,8 +61,30 @@ export default function Dashboard() {
             .eq('id', user.id)
             .maybeSingle();
           if (profile?.role) setUserRole(profile.role);
+        } else {
+          // Fallback to local auth_user if supabase has no session
+          const localUserStr = localStorage.getItem('auth_user');
+          if (localUserStr) {
+            const localUser = JSON.parse(localUserStr);
+            setCurrentUser({
+              email: localUser.email,
+              user_metadata: { thana_name: localUser.thana_name }
+            });
+            if (localUser.role) setUserRole(localUser.role);
+          }
         }
-      } catch (_) {}
+      } catch (_) {
+        // Fallback on exception
+        const localUserStr = localStorage.getItem('auth_user');
+        if (localUserStr) {
+          const localUser = JSON.parse(localUserStr);
+          setCurrentUser({
+            email: localUser.email,
+            user_metadata: { thana_name: localUser.thana_name }
+          });
+          if (localUser.role) setUserRole(localUser.role);
+        }
+      }
     })();
   }, []);
 
