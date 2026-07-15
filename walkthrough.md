@@ -100,3 +100,10 @@ A comprehensive, highly secure web application built for the Uttar Pradesh Polic
 - Configured password resets conditionally based on roles:
   - **Standard officers (`thana_user`)** can reset *their own* account password only (the select user email selector is hidden and defaults securely to their active session email address).
   - **Super-admins and administrators** retain full authorization to change/reset the password of **any** system user via the email selection dropdown list.
+
+### 11. Universal Show/Hide Password Visibility Toggle
+- Added interactive show/hide password buttons to **every** password field across the frontend client:
+  - Inside the main security gate [Login.jsx](file:///e:/SUPER%20250%20PROJECT/Spear_Phishing_Firewall/Spear-Phishing-Firewall/frontend/src/pages/Login.jsx).
+  - Inside the Reset Password form under System Settings in [Dashboard.jsx](file:///e:/SUPER%20250%20PROJECT/Spear_Phishing_Firewall/Spear-Phishing-Firewall/frontend/src/pages/Dashboard.jsx).
+- Renders an interactive `Eye` / `EyeOff` icon from `lucide-react` positioned cleanly inside the password inputs.
+- Clicking the button dynamically updates the field's `type` attribute between `"password"` and `"text"`, enabling/disabling password masking in real-time.
