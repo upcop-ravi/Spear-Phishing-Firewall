@@ -102,6 +102,7 @@ export default function Home() {
   const [reporterName, setReporterName] = useState('');
   const [reportedUrl, setReportedUrl] = useState('');
   const [description, setDescription] = useState('');
+  const [suspiciousMobile, setSuspiciousMobile] = useState('');
   const [reportSuccess, setReportSuccess] = useState(false);
   const [flaggingUrls, setFlaggingUrls] = useState({}); // { [url]: 'loading' | 'success' | 'error' }
 
@@ -199,6 +200,11 @@ export default function Home() {
     if (!reportedUrl.trim()) return;
     logVisitorAction('Submitted public phishing report for URL: ' + reportedUrl);
 
+    let finalDesc = description;
+    if (suspiciousMobile.trim()) {
+      finalDesc = `${description}\n\n[Suspicious Mobile/WhatsApp: ${suspiciousMobile}]`;
+    }
+
     try {
       const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:5000';
       const res = await fetch(`${apiBase}/api/mobile/report`, {
@@ -207,7 +213,7 @@ export default function Home() {
         body: JSON.stringify({
           reporter_name: reporterName,
           reported_url: reportedUrl,
-          description
+          description: finalDesc
         })
       });
       const data = await res.json();
@@ -219,6 +225,7 @@ export default function Home() {
           setReporterName('');
           setReportedUrl('');
           setDescription('');
+          setSuspiciousMobile('');
         }, 3000);
       }
     } catch (err) {
@@ -230,6 +237,7 @@ export default function Home() {
         setReporterName('');
         setReportedUrl('');
         setDescription('');
+        setSuspiciousMobile('');
       }, 3000);
     }
   };
@@ -404,6 +412,17 @@ export default function Home() {
                     onChange={(e) => setReportedUrl(e.target.value)}
                     placeholder="https://suspicious-booking-ayodhya.com"
                     className="w-full p-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 text-sm bg-slate-50 font-mono"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Suspicious Mobile / WhatsApp</label>
+                  <input
+                    type="text"
+                    value={suspiciousMobile}
+                    onChange={(e) => setSuspiciousMobile(e.target.value)}
+                    placeholder="Enter suspicious mobile or WhatsApp number (Optional)"
+                    className="w-full p-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 text-sm bg-slate-50"
                   />
                 </div>
 
