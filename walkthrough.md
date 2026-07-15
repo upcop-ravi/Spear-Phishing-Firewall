@@ -93,3 +93,10 @@ A comprehensive, highly secure web application built for the Uttar Pradesh Polic
 - Selecting a page size dynamically limits the number of visible rows on the screen.
 - Selecting **"All"** displays all system users in a single scrollable viewport.
 - Any change to the entries-per-page setting automatically resets the active page index to Page 1 to ensure a consistent navigation state.
+
+### 10. Role-conditioned Settings access & Self Password Resets
+- Opened access to the **System Settings** tab to **all roles** (including `thana_user`), adding the settings item in their sidebar navigation panel.
+- Enabled profile information editing: any user can now update their display name / Thana name and mobile number directly, which dynamically updates their active session and system user records.
+- Configured password resets conditionally based on roles:
+  - **Standard officers (`thana_user`)** can reset *their own* account password only (the select user email selector is hidden and defaults securely to their active session email address).
+  - **Super-admins and administrators** retain full authorization to change/reset the password of **any** system user via the email selection dropdown list.
