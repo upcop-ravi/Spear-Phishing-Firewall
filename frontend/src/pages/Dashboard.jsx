@@ -16,13 +16,13 @@ const COLORS = ['#ef4444', '#f59e0b', '#10b981'];
 // ── Role-based tab definitions ────────────────────────────────────────────────
 // Main navigation — matches original top-nav exactly
 const ALL_TABS = [
-  { id: 'analytics',  label: 'Analytics View',      icon: RefreshCw,    roles: ['super_admin', 'admin', 'thana_user'], group: 'main' },
-  { id: 'threats',    label: 'Cyber Threats',        icon: ShieldAlert,  roles: ['super_admin', 'admin', 'thana_user'], group: 'main' },
-  { id: 'properties', label: 'Registered Properties',icon: Building2,    roles: ['super_admin', 'admin', 'thana_user'], group: 'main' },
-  { id: 'reports',    label: 'Public Reports',       icon: ClipboardList,roles: ['super_admin', 'admin', 'thana_user'], group: 'main' },
-  { id: 'visitors',   label: 'Visitor Logs',         icon: Users,        roles: ['super_admin', 'admin'],               group: 'main' },
-  { id: 'users',      label: 'Manage Users',         icon: UserCog,      roles: ['super_admin'],                        group: 'admin' },
-  { id: 'settings',   label: 'System Settings',      icon: Settings,     roles: ['super_admin', 'admin'],               group: 'admin' },
+  { id: 'analytics',  label: 'Analytics View',      icon: RefreshCw,    roles: ['super_admin', 'admin', 'thana_user'], group: 'main', desc: 'Visual summary of cyber threat stats, active cases, and domain takedowns' },
+  { id: 'threats',    label: 'Cyber Threats',        icon: ShieldAlert,  roles: ['super_admin', 'admin', 'thana_user'], group: 'main', desc: 'List of fraudulent URLs, registrar WHOIS lookups, and takedown status' },
+  { id: 'properties', label: 'Registered Properties',icon: Building2,    roles: ['super_admin', 'admin', 'thana_user'], group: 'main', desc: 'Registry of certified hotels and their verified booking domains' },
+  { id: 'reports',    label: 'Public Reports',       icon: ClipboardList,roles: ['super_admin', 'admin', 'thana_user'], group: 'main', desc: 'Citizen reported suspicious links awaiting Cyber Cell action' },
+  { id: 'visitors',   label: 'Visitor Logs',         icon: Users,        roles: ['super_admin', 'admin'],               group: 'main', desc: 'Audited system interactions and portal access records' },
+  { id: 'users',      label: 'Manage Users',         icon: UserCog,      roles: ['super_admin'],                        group: 'admin', desc: 'Super-admin interface to add/deactivate police CUG accounts' },
+  { id: 'settings',   label: 'System Settings',      icon: Settings,     roles: ['super_admin', 'admin'],               group: 'admin', desc: 'Configure notifications, timezone preferences, and profile details' },
 ];
 
 // ── Role display helpers ──────────────────────────────────────────────────────
@@ -222,6 +222,8 @@ export default function Dashboard() {
             <button
               key={tab.id}
               onClick={() => { setActiveTab(tab.id); setSidebarOpen(false); }}
+              data-tooltip={tab.desc}
+              data-tooltip-position="right"
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all cursor-pointer group ${
                 isActive
                   ? 'bg-white text-orange-700 shadow-md'
@@ -255,6 +257,8 @@ export default function Dashboard() {
                 <button
                   key={tab.id}
                   onClick={() => { setActiveTab(tab.id); setSidebarOpen(false); }}
+                  data-tooltip={tab.desc}
+                  data-tooltip-position="right"
                   className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all cursor-pointer group ${
                     isActive
                       ? 'bg-white text-orange-700 shadow-md'
@@ -381,11 +385,11 @@ export default function Dashboard() {
 
               {/* KPI Cards */}
               <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5 gap-3 md:gap-4">
-                <KpiCard title="Verified Properties"    value={kpis.totalHotels}         icon={<Building2 />}    color="text-indigo-600"  bg="bg-indigo-50" />
-                <KpiCard title="Active Phishing Sites"  value={kpis.activeThreats}        icon={<ShieldAlert />}  color="text-red-600"     bg="bg-red-50"    highlight />
-                <KpiCard title="Takedowns Pending"      value={kpis.takedownInitiated}    icon={<Send />}         color="text-amber-600"   bg="bg-amber-50" />
-                <KpiCard title="Deactivated Domains"    value={kpis.totalBlocked}         icon={<ShieldCheck />}  color="text-emerald-600" bg="bg-emerald-50" />
-                <KpiCard title="Crowdsourced Reports"   value={kpis.totalReports}         icon={<ClipboardList />}color="text-blue-600"    bg="bg-blue-50" />
+                <KpiCard title="Verified Properties"    value={kpis.totalHotels}         icon={<Building2 />}    color="text-indigo-600"  bg="bg-indigo-50" tooltip="Total registered accommodations in Ayodhya" />
+                <KpiCard title="Active Phishing Sites"  value={kpis.activeThreats}        icon={<ShieldAlert />}  color="text-red-600"     bg="bg-red-50"    highlight tooltip="Scam hotel booking portals currently active" />
+                <KpiCard title="Takedowns Pending"      value={kpis.takedownInitiated}    icon={<Send />}         color="text-amber-600"   bg="bg-amber-50" tooltip="URLs under current domain takedown process" />
+                <KpiCard title="Deactivated Domains"    value={kpis.totalBlocked}         icon={<ShieldCheck />}  color="text-emerald-600" bg="bg-emerald-50" tooltip="Phishing sites successfully blocked/deactivated" />
+                <KpiCard title="Crowdsourced Reports"   value={kpis.totalReports}         icon={<ClipboardList />}color="text-blue-600"    bg="bg-blue-50" tooltip="Total suspected scam domains submitted by citizens" />
               </div>
 
               {/* Charts */}
@@ -493,7 +497,14 @@ export default function Dashboard() {
                         <td className="p-4 text-right">
                           {link.status === 'Blocked'
                             ? <span className="text-slate-400 italic font-semibold">Completed</span>
-                            : <button onClick={() => generateTakedownNotice(link)} className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-lg text-xs font-bold transition-all cursor-pointer"><FileText className="w-3.5 h-3.5" />Notice</button>
+                            : <button 
+                                onClick={() => generateTakedownNotice(link)} 
+                                data-tooltip="Generate print-ready legal takedown notice for domain registrar"
+                                data-tooltip-position="left"
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-lg text-xs font-bold transition-all cursor-pointer"
+                              >
+                                <FileText className="w-3.5 h-3.5" />Notice
+                              </button>
                           }
                         </td>
                       </tr>
@@ -539,7 +550,12 @@ export default function Dashboard() {
                           <span className="text-[10px] font-mono text-slate-400 font-semibold block">{hotel.police_verification}</span>
                         </td>
                         <td className="p-4 text-right">
-                          <button onClick={() => generateQrCertificate(hotel)} className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-lg text-xs font-bold transition-all bg-white cursor-pointer shadow-sm">
+                          <button 
+                            onClick={() => generateQrCertificate(hotel)} 
+                            data-tooltip="Generate secure QR code & hotelier verification certificate"
+                            data-tooltip-position="left"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-lg text-xs font-bold transition-all bg-white cursor-pointer shadow-sm"
+                          >
                             <QrCode className="w-3.5 h-3.5 text-slate-500" />Certificate
                           </button>
                         </td>
@@ -578,8 +594,20 @@ export default function Dashboard() {
                         <td className="p-4 text-slate-400 font-semibold">{new Date(report.submitted_at).toLocaleString()}</td>
                         <td className="p-4 text-right">
                           <div className="flex justify-end gap-2">
-                            <button className="px-2.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 rounded-lg text-xs font-bold cursor-pointer">Verify</button>
-                            <button className="px-2.5 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-600 rounded-lg text-xs font-bold cursor-pointer">Dismiss</button>
+                            <button 
+                              data-tooltip="Investigate and add this URL to the active threats scan list"
+                              data-tooltip-position="left"
+                              className="px-2.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 rounded-lg text-xs font-bold cursor-pointer"
+                            >
+                              Verify
+                            </button>
+                            <button 
+                              data-tooltip="Dismiss and remove this submission from the inbox"
+                              data-tooltip-position="left"
+                              className="px-2.5 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-600 rounded-lg text-xs font-bold cursor-pointer"
+                            >
+                              Dismiss
+                            </button>
                           </div>
                         </td>
                       </tr>
@@ -799,13 +827,17 @@ export default function Dashboard() {
 }
 
 // ── Reusable KPI card ─────────────────────────────────────────────────────────
-function KpiCard({ title, value, icon, color, bg, highlight }) {
+function KpiCard({ title, value, icon, color, bg, highlight, tooltip }) {
   return (
-    <div className={`p-4 rounded-2xl border transition-all duration-300 hover:-translate-y-0.5 shadow-sm ${
-      highlight
-        ? 'bg-gradient-to-br from-indigo-600 to-indigo-800 text-white border-transparent shadow-indigo-600/10'
-        : 'bg-white border-slate-200'
-    }`}>
+    <div 
+      data-tooltip={tooltip}
+      data-tooltip-position="bottom"
+      className={`p-4 rounded-2xl border transition-all duration-300 hover:-translate-y-0.5 shadow-sm ${
+        highlight
+          ? 'bg-gradient-to-br from-indigo-600 to-indigo-800 text-white border-transparent shadow-indigo-600/10'
+          : 'bg-white border-slate-200'
+      }`}
+    >
       <div className="flex items-center justify-between mb-3">
         <h4 className={`text-[10px] font-bold uppercase tracking-wider ${highlight ? 'text-indigo-200' : 'text-slate-400'}`}>{title}</h4>
         <div className={`p-2 rounded-xl ${highlight ? 'bg-white/20 text-white' : `${bg} ${color}`}`}>

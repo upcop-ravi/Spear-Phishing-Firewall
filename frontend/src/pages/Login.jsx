@@ -225,6 +225,8 @@ export default function Login() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="officer@up.nic.in" 
+                data-tooltip="Only official domains (.nic.in, @upcop.gov.in, @up.gov.in) are authorized"
+                data-tooltip-position="bottom"
                 className="w-full pl-10 pr-4 py-3 border border-slate-200 bg-slate-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm font-semibold text-slate-800 placeholder-slate-400 font-mono"
               />
             </div>
@@ -247,6 +249,8 @@ export default function Login() {
 
           <button 
             type="submit" 
+            data-tooltip="Log in securely to the admin/police dashboard console"
+            data-tooltip-position="bottom"
             className="w-full py-3.5 bg-gradient-to-r from-orange-600 to-amber-500 hover:brightness-105 text-white rounded-xl text-sm font-bold shadow-lg shadow-orange-600/10 transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
             {loading ? 'Verifying Credentials...' : 'Access Dashboard'}
@@ -258,6 +262,8 @@ export default function Login() {
           <button 
             type="button" 
             onClick={() => navigate('/')} 
+            data-tooltip="Return to the public hotel verification lookup page"
+            data-tooltip-position="top"
             className="text-indigo-600 hover:underline"
           >
             Back to Public Portal
