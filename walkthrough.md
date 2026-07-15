@@ -63,3 +63,7 @@ A comprehensive, highly secure web application built for the Uttar Pradesh Polic
 - Created a seeding script [seedReports.js](file:///e:/SUPER%20250%20PROJECT/Spear_Phishing_Firewall/Spear-Phishing-Firewall/backend/src/seedReports.js) to automate the generation of **50 crowdsourced website reports** with realistic data (scam URLs, reporter names, descriptions of UPI/WhatsApp scam interactions, and submission timestamps).
 - Successfully executed the script to seed both the real Supabase database and local fallback `db.json` database.
 - Added strict error validation checking in the client's API fetching logic; any connection errors or exceptions thrown from the real Supabase backend now auto-trigger a clean mock fallback state, ensuring the officer dashboard stays online.
+
+### 5. Sidebar Navigation Scrollbar Cleanup
+- Hidden both the horizontal and vertical scrollbars from the left sidebar navigation panel using a custom `.no-scrollbar` utility in [index.css](file:///e:/SUPER%20250%20PROJECT/Spear_Phishing_Firewall/Spear-Phishing-Firewall/frontend/src/index.css).
+- Added `overflow-x-hidden` to prevent accidental layout shifts and ensure the sidebar remains visually clean and native-feeling across all device displays.
