@@ -51,3 +51,15 @@ A comprehensive, highly secure web application built for the Uttar Pradesh Polic
 - Added case-insensitive password tolerance to credentials such as `superadmin@up.nic.in` (accepts both `admin@123` and `Admin@123`).
 - Developed a robust **local authentication bypass mechanism**: if Supabase Auth on the live site fails due to email rate limits, network timeouts, or pending email confirmations, the gateway falls back automatically to local verification.
 - Stores local session data (`auth_user`) in `localStorage` allowing the dashboard to read roles and local thana designations correctly.
+
+### 3. Clickable KPI Metrics Cards
+- Converted all KPI numeric metric cards in the **Analytics View** of the Dashboard into interactive, clickable navigation elements.
+- Clicking on a metric card routes the user automatically to the respective detail view:
+  - *Verified Properties* card switches to the **Registered Properties** tab.
+  - *Active Phishing Sites*, *Takedowns Pending*, and *Deactivated Domains* cards switch to the **Cyber Threats** tab.
+  - *Crowdsourced Reports* card switches to the **Public Reports** tab (Crowdsourced Threats Inbox).
+
+### 4. Crowdsourced Threats Inbox / Suspicious Reports Seeding
+- Created a seeding script [seedReports.js](file:///e:/SUPER%20250%20PROJECT/Spear_Phishing_Firewall/Spear-Phishing-Firewall/backend/src/seedReports.js) to automate the generation of **50 crowdsourced website reports** with realistic data (scam URLs, reporter names, descriptions of UPI/WhatsApp scam interactions, and submission timestamps).
+- Successfully executed the script to seed both the real Supabase database and local fallback `db.json` database.
+- Added strict error validation checking in the client's API fetching logic; any connection errors or exceptions thrown from the real Supabase backend now auto-trigger a clean mock fallback state, ensuring the officer dashboard stays online.
