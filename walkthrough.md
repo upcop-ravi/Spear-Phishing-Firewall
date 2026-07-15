@@ -107,3 +107,8 @@ A comprehensive, highly secure web application built for the Uttar Pradesh Polic
   - Inside the Reset Password form under System Settings in [Dashboard.jsx](file:///e:/SUPER%20250%20PROJECT/Spear_Phishing_Firewall/Spear-Phishing-Firewall/frontend/src/pages/Dashboard.jsx).
 - Renders an interactive `Eye` / `EyeOff` icon from `lucide-react` positioned cleanly inside the password inputs.
 - Clicking the button dynamically updates the field's `type` attribute between `"password"` and `"text"`, enabling/disabling password masking in real-time.
+
+### 12. Suspicious Mobile / WhatsApp Input on Public Report Form
+- Updated the public citizen portal [Home.jsx](file:///e:/SUPER%20250%20PROJECT/Spear_Phishing_Firewall/Spear-Phishing-Firewall/frontend/src/pages/Home.jsx) to add a **"Suspicious Mobile / WhatsApp"** input text field in the *Report Suspicious Website* modal form.
+- Allows visitors to optionally report the fraudster's sender phone or WhatsApp number alongside the fraudulent domain link.
+- Appends the reported phone details cleanly inside the database `description` field parameter before calling the public backend API `/api/mobile/report`. This displays the reported number inside the police cell's Public Reports panel without causing Supabase DB schema column errors.
