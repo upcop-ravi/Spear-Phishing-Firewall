@@ -103,6 +103,7 @@ export default function Dashboard() {
   const [expandedLog,    setExpandedLog]      = useState(null);
   const [systemUsers,    setSystemUsers]      = useState([]);
   const [userSearchQuery, setUserSearchQuery] = useState('');
+  const [userPage,        setUserPage]        = useState(1);
   const [resetEmail, setResetEmail] = useState('');
   const [resetPassword, setResetPassword] = useState('');
   const [resetFormLoading, setResetFormLoading] = useState(false);
@@ -832,6 +833,14 @@ export default function Dashboard() {
                 (u.role || '').toLowerCase().includes(q)
               );
             });
+
+            const ITEMS_PER_PAGE = 5;
+            const totalItems = filteredUsers.length;
+            const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
+            const currentPage = Math.min(userPage, totalPages);
+            const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+            const paginatedUsers = filteredUsers.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
             return (
               <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden animate-in fade-in duration-200">
                 <div className="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -844,7 +853,10 @@ export default function Dashboard() {
                       type="text"
                       placeholder="Search name, email, CUG..."
                       value={userSearchQuery}
-                      onChange={(e) => setUserSearchQuery(e.target.value)}
+                      onChange={(e) => {
+                        setUserSearchQuery(e.target.value);
+                        setUserPage(1);
+                      }}
                       className="appearance-none bg-slate-50 border border-slate-200 text-slate-700 py-1.5 px-3 rounded-lg text-xs font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 w-full sm:w-64"
                     />
                   </div>
@@ -862,14 +874,14 @@ export default function Dashboard() {
                       </tr>
                     </thead>
                     <tbody>
-                      {filteredUsers.length === 0 ? (
+                      {paginatedUsers.length === 0 ? (
                         <tr>
                           <td colSpan={6} className="p-8 text-center text-slate-400 font-semibold">
                             No users found matching your search query.
                           </td>
                         </tr>
                       ) : (
-                        filteredUsers.map(user => (
+                        paginatedUsers.map(user => (
                           <tr key={user.id} className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors font-medium text-slate-700">
                             <td className="p-4 font-bold text-slate-800 text-sm">{user.thana_name}</td>
                             <td className="p-4 font-mono font-bold text-slate-600 select-all">{user.nic_email}</td>
@@ -918,6 +930,49 @@ export default function Dashboard() {
                     </tbody>
                   </table>
                 </div>
+
+                {totalPages > 1 && (
+                  <div className="p-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-50/50">
+                    <p className="text-[11px] text-slate-500 font-semibold">
+                      Showing <span className="font-extrabold text-slate-800">{startIndex + 1}</span> to{' '}
+                      <span className="font-extrabold text-slate-800">
+                        {Math.min(startIndex + ITEMS_PER_PAGE, totalItems)}
+                      </span>{' '}
+                      of <span className="font-extrabold text-slate-800">{totalItems}</span> users
+                    </p>
+                    <div className="flex items-center gap-1">
+                      <button
+                        onClick={() => setUserPage(p => Math.max(p - 1, 1))}
+                        disabled={currentPage === 1}
+                        className="px-2.5 py-1.5 rounded-lg border border-slate-200 text-[11px] font-bold bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:hover:bg-white cursor-pointer transition-colors"
+                      >
+                        Previous
+                      </button>
+                      
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).map((pg) => (
+                        <button
+                          key={pg}
+                          onClick={() => setUserPage(pg)}
+                          className={`w-7 h-7 flex items-center justify-center rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+                            currentPage === pg
+                              ? 'bg-indigo-600 text-white shadow-sm font-extrabold'
+                              : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
+                          }`}
+                        >
+                          {pg}
+                        </button>
+                      ))}
+
+                      <button
+                        onClick={() => setUserPage(p => Math.min(p + 1, totalPages))}
+                        disabled={currentPage === totalPages}
+                        className="px-2.5 py-1.5 rounded-lg border border-slate-200 text-[11px] font-bold bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-50 disabled:hover:bg-white cursor-pointer transition-colors"
+                      >
+                        Next
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             );
           })()}
