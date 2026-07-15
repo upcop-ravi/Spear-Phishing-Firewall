@@ -84,4 +84,40 @@ const getAnalytics = async (req, res) => {
     }
 };
 
-module.exports = { getAnalytics };
+const resetUserPassword = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        if (!email || !password) {
+            return res.status(400).json({ error: 'Email and password are required' });
+        }
+
+        // Get user by email from system_users
+        const { data: userRow, error: uErr } = await supabase
+            .from('system_users')
+            .select('id')
+            .eq('nic_email', email)
+            .maybeSingle();
+
+        if (uErr) throw uErr;
+
+        if (userRow && supabase.auth && supabase.auth.admin) {
+            // Update auth password using service role capabilities
+            const { error: resetErr } = await supabase.auth.admin.updateUserById(
+                userRow.id,
+                { password: password }
+            );
+            if (resetErr) {
+                console.warn('[ResetPassword] Supabase auth reset warning:', resetErr.message);
+            }
+        } else {
+            console.warn('[ResetPassword] User not found or auth.admin unavailable for email:', email);
+        }
+
+        res.json({ success: true, message: 'Password reset successful.' });
+    } catch (error) {
+        console.error('[AnalyticsController] Reset Password Error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+module.exports = { getAnalytics, resetUserPassword };

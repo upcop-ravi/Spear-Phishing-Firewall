@@ -67,8 +67,11 @@ export default function Login() {
       'superadmin@up.nic.in': 'admin@123'
     };
 
-    const isMockMatch = mockCredentials[email] && (
-      mockCredentials[email] === password || 
+    const resetPasswords = JSON.parse(localStorage.getItem('safestay_reset_passwords') || '{}');
+    const expectedPassword = resetPasswords[email] || mockCredentials[email];
+
+    const isMockMatch = expectedPassword && (
+      expectedPassword === password || 
       (email === 'superadmin@up.nic.in' && (password === 'admin@123' || password === 'Admin@123'))
     );
 
