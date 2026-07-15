@@ -81,3 +81,9 @@ A comprehensive, highly secure web application built for the Uttar Pradesh Polic
 - Created a POST endpoint `/api/analytics/reset-password` on the backend that handles resetting passwords in Supabase Auth using the service role admin API (`supabase.auth.admin.updateUserById`).
 - Integrates local override credentials caching (`localStorage.setItem('safestay_reset_passwords', ...)`) to ensure the password reset is instantly testable and fully functional even when running in offline/local mock bypass mode.
 - Sanitized password input controls, adding visual validation states, loading indicators, and clean warning/success prompts.
+
+### 8. Paging on View Users Page
+- Implemented client-side **pagination** in the View Users directory list.
+- Breaks down the police accounts list to display a clean limit of **5 users per page**, enhancing layout readability and preventing screen-overflow.
+- Created beautiful pagination controls at the bottom of the table, including Previous and Next directional buttons and interactive page number indicators.
+- Added dynamic search page resetting; any text entry in the search input box automatically resets the current active page pointer to page 1 so that searches always start from the initial page index.
