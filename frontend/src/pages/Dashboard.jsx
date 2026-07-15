@@ -215,7 +215,7 @@ export default function Dashboard() {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto overflow-x-hidden no-scrollbar">
         {/* Main tabs */}
         <p className="text-orange-100/40 text-[9px] font-bold uppercase tracking-widest px-2 mb-2">Dashboard</p>
         {visibleTabs.filter(t => t.group === 'main').map((tab) => {
