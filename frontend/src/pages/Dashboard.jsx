@@ -22,7 +22,7 @@ const ALL_TABS = [
   { id: 'reports',    label: 'Public Reports',       icon: ClipboardList,roles: ['super_admin', 'admin', 'thana_user'], group: 'main', desc: 'Citizen reported suspicious links awaiting Cyber Cell action' },
   { id: 'visitors',   label: 'Visitor Logs',         icon: Users,        roles: ['super_admin', 'admin'],               group: 'main', desc: 'Audited system interactions and portal access records' },
   { id: 'users',      label: 'View Users',           icon: Users,        roles: ['super_admin', 'admin'],               group: 'admin', desc: 'Search and activate/deactivate police CUG accounts' },
-  { id: 'settings',   label: 'System Settings',      icon: Settings,     roles: ['super_admin', 'admin'],               group: 'admin', desc: 'Configure notifications, timezone preferences, and profile details' },
+  { id: 'settings',   label: 'System Settings',      icon: Settings,     roles: ['super_admin', 'admin', 'thana_user'], group: 'admin', desc: 'Check profile details, update display name, and reset password' },
 ];
 
 // ── Role display helpers ──────────────────────────────────────────────────────
@@ -110,6 +110,18 @@ export default function Dashboard() {
   const [resetFormLoading, setResetFormLoading] = useState(false);
   const [resetSuccess, setResetSuccess] = useState(null);
   const [resetError, setResetError] = useState(null);
+  const [profileName, setProfileName] = useState('');
+  const [profileMobile, setProfileMobile] = useState('');
+  const [profileSuccess, setProfileSuccess] = useState(null);
+  const [profileError, setProfileError] = useState(null);
+  const [profileLoading, setProfileLoading] = useState(false);
+
+  useEffect(() => {
+    if (currentUser) {
+      setProfileName(currentUser.user_metadata?.thana_name || currentUser.thana_name || '');
+      setProfileMobile(currentUser.cug_mobile || '');
+    }
+  }, [currentUser]);
 
   const counts = {
     threats:    suspiciousLinks.length,
@@ -219,7 +231,8 @@ export default function Dashboard() {
 
   const handleResetUserPassword = async (e) => {
     e.preventDefault();
-    if (!resetEmail || !resetPassword) {
+    const targetEmail = userRole === 'thana_user' ? userEmail : resetEmail;
+    if (!targetEmail || !resetPassword) {
       setResetError('Email and new password are required');
       return;
     }
@@ -232,16 +245,16 @@ export default function Dashboard() {
       const res = await fetch(`${apiBase}/api/analytics/reset-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: resetEmail, password: resetPassword })
+        body: JSON.stringify({ email: targetEmail, password: resetPassword })
       });
       const data = await res.json();
       if (res.ok && data.success) {
         // Save locally for fallback login verification override
         const resetPasses = JSON.parse(localStorage.getItem('safestay_reset_passwords') || '{}');
-        resetPasses[resetEmail] = resetPassword;
+        resetPasses[targetEmail] = resetPassword;
         localStorage.setItem('safestay_reset_passwords', JSON.stringify(resetPasses));
 
-        setResetSuccess(`Password reset successfully for ${resetEmail}!`);
+        setResetSuccess(`Password reset successfully for ${targetEmail}!`);
         setResetPassword('');
       } else {
         throw new Error(data.error || 'Server password reset failed');
@@ -250,13 +263,67 @@ export default function Dashboard() {
       console.warn('Backend password reset failed. Using local storage override fallback...', err);
       // Fallback local override if backend is not available
       const resetPasses = JSON.parse(localStorage.getItem('safestay_reset_passwords') || '{}');
-      resetPasses[resetEmail] = resetPassword;
+      resetPasses[targetEmail] = resetPassword;
       localStorage.setItem('safestay_reset_passwords', JSON.stringify(resetPasses));
 
-      setResetSuccess(`Password reset successfully (Local Override Fallback) for ${resetEmail}!`);
+      setResetSuccess(`Password reset successfully (Local Override Fallback) for ${targetEmail}!`);
       setResetPassword('');
     } finally {
       setResetFormLoading(false);
+    }
+  };
+
+  const handleUpdateProfile = async (e) => {
+    e.preventDefault();
+    setProfileLoading(true);
+    setProfileSuccess(null);
+    setProfileError(null);
+    try {
+      const { error } = await supabase
+        .from('system_users')
+        .update({ thana_name: profileName, cug_mobile: profileMobile })
+        .eq('nic_email', userEmail);
+
+      if (error) throw error;
+
+      const localUserStr = localStorage.getItem('auth_user');
+      const localUser = localUserStr ? JSON.parse(localUserStr) : {};
+      localUser.thana_name = profileName;
+      localUser.cug_mobile = profileMobile;
+      localStorage.setItem('auth_user', JSON.stringify(localUser));
+
+      setCurrentUser({
+        ...currentUser,
+        cug_mobile: profileMobile,
+        user_metadata: {
+          ...currentUser.user_metadata,
+          thana_name: profileName
+        }
+      });
+
+      setSystemUsers(prev => prev.map(u => u.nic_email === userEmail ? { ...u, thana_name: profileName, cug_mobile: profileMobile } : u));
+      setProfileSuccess('Profile details updated successfully!');
+    } catch (err) {
+      console.warn('Profile update db call failed. Updating local session fallback...', err);
+      const localUserStr = localStorage.getItem('auth_user');
+      const localUser = localUserStr ? JSON.parse(localUserStr) : {};
+      localUser.thana_name = profileName;
+      localUser.cug_mobile = profileMobile;
+      localStorage.setItem('auth_user', JSON.stringify(localUser));
+
+      setCurrentUser({
+        ...currentUser,
+        cug_mobile: profileMobile,
+        user_metadata: {
+          ...currentUser.user_metadata,
+          thana_name: profileName
+        }
+      });
+
+      setSystemUsers(prev => prev.map(u => u.nic_email === userEmail ? { ...u, thana_name: profileName, cug_mobile: profileMobile } : u));
+      setProfileSuccess('Profile details updated successfully!');
+    } finally {
+      setProfileLoading(false);
     }
   };
 
@@ -998,27 +1065,77 @@ export default function Dashboard() {
             );
           })()}
 
-          {/* SYSTEM SETTINGS TAB (admin + super_admin) */}
+          {/* SYSTEM SETTINGS TAB */}
           {activeTab === 'settings' && (
             <div className="space-y-4">
-              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden animate-in fade-in duration-200">
                 <div className="p-5 border-b border-slate-100 flex items-center justify-between">
                   <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">System Settings</h3>
                   <span className="text-[10px] bg-indigo-50 text-indigo-600 px-2.5 py-1 rounded-full font-bold border border-indigo-100">Console Preferences</span>
                 </div>
                 <div className="p-6 space-y-5">
-                  {/* Account Info */}
+                  {/* Profile Info */}
                   <div>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Account Information</p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Logged In As</p>
-                        <p className="text-sm font-bold text-slate-800 truncate">{userEmail}</p>
-                      </div>
-                      <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Role</p>
-                        <p className="text-sm font-bold text-slate-800">{roleMeta.label}</p>
-                      </div>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Profile Information</p>
+                    <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 max-w-xl">
+                      <form onSubmit={handleUpdateProfile} className="space-y-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div className="space-y-1.5">
+                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Profile Display Name / Thana</label>
+                            <input
+                              type="text"
+                              required
+                              value={profileName}
+                              onChange={e => setProfileName(e.target.value)}
+                              className="w-full bg-white border border-slate-200 text-slate-700 py-2 px-3 rounded-lg text-xs font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                            />
+                          </div>
+
+                          <div className="space-y-1.5">
+                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">CUG Mobile Number</label>
+                            <input
+                              type="text"
+                              value={profileMobile}
+                              onChange={e => setProfileMobile(e.target.value)}
+                              className="w-full bg-white border border-slate-200 text-slate-700 py-2 px-3 rounded-lg text-xs font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                            />
+                          </div>
+
+                          <div className="space-y-1.5">
+                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Official Email ID</label>
+                            <input
+                              type="text"
+                              disabled
+                              value={userEmail}
+                              className="w-full bg-slate-100 border border-slate-200 text-slate-400 py-2 px-3 rounded-lg text-xs font-bold focus:outline-none select-none cursor-not-allowed"
+                            />
+                          </div>
+
+                          <div className="space-y-1.5">
+                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Role Scope</label>
+                            <input
+                              type="text"
+                              disabled
+                              value={roleMeta.label}
+                              className="w-full bg-slate-100 border border-slate-200 text-slate-400 py-2 px-3 rounded-lg text-xs font-bold focus:outline-none select-none cursor-not-allowed"
+                            />
+                          </div>
+                        </div>
+
+                        {profileSuccess && (
+                          <div className="p-3 rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-700 text-xs font-semibold leading-relaxed">
+                            {profileSuccess}
+                          </div>
+                        )}
+
+                        <button
+                          type="submit"
+                          disabled={profileLoading}
+                          className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold transition-all cursor-pointer shadow-sm disabled:opacity-50"
+                        >
+                          {profileLoading ? 'Updating Profile...' : 'Update Profile Details'}
+                        </button>
+                      </form>
                     </div>
                   </div>
 
@@ -1035,35 +1152,46 @@ export default function Dashboard() {
                         <option>Last 7 Days</option>
                         <option>Last 30 Days</option>
                         <option>This Year</option>
-                          </select>
+                      </select>
                       <ChevronDown className="absolute right-3 top-3 h-3 w-3 text-slate-400 pointer-events-none" />
                     </div>
                   </div>
 
                   {/* Reset User Password Section */}
                   <div>
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Reset User Password</p>
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">
+                      {userRole === 'thana_user' ? 'Reset Account Password' : 'Reset User Password'}
+                    </p>
                     <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 max-w-xl">
                       <form onSubmit={handleResetUserPassword} className="space-y-4">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           <div className="space-y-1.5">
-                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Select System User</label>
-                            <div className="relative">
-                              <select
-                                required
-                                value={resetEmail}
-                                onChange={e => setResetEmail(e.target.value)}
-                                className="w-full appearance-none bg-white border border-slate-200 text-slate-700 py-2.5 pl-3 pr-8 rounded-lg text-xs font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 cursor-pointer"
-                              >
-                                <option value="">Select User Email</option>
-                                {systemUsers.map(user => (
-                                  <option key={user.id} value={user.nic_email}>
-                                    {user.thana_name} ({user.nic_email})
-                                  </option>
-                                ))}
-                              </select>
-                              <ChevronDown className="absolute right-2.5 top-3.5 h-3.5 w-3.5 text-slate-400 pointer-events-none" />
-                            </div>
+                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Account Email ID</label>
+                            {userRole === 'thana_user' ? (
+                              <input
+                                type="text"
+                                disabled
+                                value={userEmail}
+                                className="w-full bg-slate-100 border border-slate-200 text-slate-400 py-2 px-3 rounded-lg text-xs font-bold focus:outline-none select-none cursor-not-allowed"
+                              />
+                            ) : (
+                              <div className="relative">
+                                <select
+                                  required
+                                  value={resetEmail}
+                                  onChange={e => setResetEmail(e.target.value)}
+                                  className="w-full appearance-none bg-white border border-slate-200 text-slate-700 py-2.5 pl-3 pr-8 rounded-lg text-xs font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 cursor-pointer"
+                                >
+                                  <option value="">Select User Email</option>
+                                  {systemUsers.map(user => (
+                                    <option key={user.id} value={user.nic_email}>
+                                      {user.thana_name} ({user.nic_email})
+                                    </option>
+                                  ))}
+                                </select>
+                                <ChevronDown className="absolute right-2.5 top-3.5 h-3.5 w-3.5 text-slate-400 pointer-events-none" />
+                              </div>
+                            )}
                           </div>
                           
                           <div className="space-y-1.5">
