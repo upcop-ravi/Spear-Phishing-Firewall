@@ -21,7 +21,7 @@ const ALL_TABS = [
   { id: 'properties', label: 'Registered Properties',icon: Building2,    roles: ['super_admin', 'admin', 'thana_user'], group: 'main', desc: 'Registry of certified hotels and their verified booking domains' },
   { id: 'reports',    label: 'Public Reports',       icon: ClipboardList,roles: ['super_admin', 'admin', 'thana_user'], group: 'main', desc: 'Citizen reported suspicious links awaiting Cyber Cell action' },
   { id: 'visitors',   label: 'Visitor Logs',         icon: Users,        roles: ['super_admin', 'admin'],               group: 'main', desc: 'Audited system interactions and portal access records' },
-  { id: 'users',      label: 'Manage Users',         icon: UserCog,      roles: ['super_admin'],                        group: 'admin', desc: 'Super-admin interface to add/deactivate police CUG accounts' },
+  { id: 'users',      label: 'View Users',           icon: Users,        roles: ['super_admin', 'admin'],               group: 'admin', desc: 'Search and activate/deactivate police CUG accounts' },
   { id: 'settings',   label: 'System Settings',      icon: Settings,     roles: ['super_admin', 'admin'],               group: 'admin', desc: 'Configure notifications, timezone preferences, and profile details' },
 ];
 
@@ -101,12 +101,15 @@ export default function Dashboard() {
   const [publicReports,  setPublicReports]    = useState([]);
   const [visitorLogs,    setVisitorLogs]      = useState([]);
   const [expandedLog,    setExpandedLog]      = useState(null);
+  const [systemUsers,    setSystemUsers]      = useState([]);
+  const [userSearchQuery, setUserSearchQuery] = useState('');
 
   const counts = {
     threats:    suspiciousLinks.length,
     properties: verifiedHotels.length,
     reports:    publicReports.length,
     visitors:   visitorLogs.length,
+    users:      systemUsers.length,
   };
 
   // ── Fetch data ─────────────────────────────────────────────────────────────
@@ -120,20 +123,23 @@ export default function Dashboard() {
       setDonutData(data.charts.threatStatus);
       setBarData(data.charts.threatsOverTime);
       setTopTargets(data.topTargetedHotels);
-      const [linksRes, hotelsRes, reportsRes, logsRes] = await Promise.all([
+      const [linksRes, hotelsRes, reportsRes, logsRes, usersRes] = await Promise.all([
         supabase.from('suspicious_links').select('*, verified_hotels(hotel_name, official_url)'),
         supabase.from('verified_hotels').select('*'),
         supabase.from('public_reports').select('*'),
-        supabase.from('visitor_logs').select('*')
+        supabase.from('visitor_logs').select('*'),
+        supabase.from('system_users').select('*')
       ]);
       if (linksRes.error) throw linksRes.error;
       if (hotelsRes.error) throw hotelsRes.error;
       if (reportsRes.error) throw reportsRes.error;
       if (logsRes.error) throw logsRes.error;
+      if (usersRes.error) throw usersRes.error;
       if (linksRes.data)  setSuspiciousLinks(linksRes.data);
       if (hotelsRes.data) setVerifiedHotels(hotelsRes.data);
       if (reportsRes.data) setPublicReports(reportsRes.data);
       if (logsRes.data)   setVisitorLogs([...logsRes.data].reverse());
+      if (usersRes.data)  setSystemUsers(usersRes.data);
     } catch (_) {
       // Offline fallback
       setKpis({ activeThreats:14, takedownInitiated:48, totalBlocked:82, totalHotels:142, totalReports:36 });
@@ -153,6 +159,14 @@ export default function Dashboard() {
       setPublicReports([
         { id:'p1', reporter_name:'Rohan Sharma',       reported_url:'http://fake-ramayana-booking.com', description:'Direct WhatsApp payment link before check-in.', status:'Pending',  submitted_at:'2026-05-27T08:15:00.000Z' },
         { id:'p2', reporter_name:'Anonymous Devotee',  reported_url:'https://ayodhyastay-discount.net', description:'Exact page clones with heavy discounts.', status:'Reviewed', submitted_at:'2026-05-26T23:30:00.000Z' }
+      ]);
+      setSystemUsers([
+        { id: 'u1', thana_name: 'Kotwali Nagar', nic_email: 'sho-kotnagar.ay@up.gov.in', cug_mobile: '9454403303', role: 'thana_user', is_active: true },
+        { id: 'u2', thana_name: 'Kotwali Cantt', nic_email: 'sho-cantt.ay@up.gov.in', cug_mobile: '9454403298', role: 'thana_user', is_active: true },
+        { id: 'u3', thana_name: 'Cyber Thana', nic_email: 'sho-cybercrime.ay@up.gov.in', cug_mobile: '7839876653', role: 'admin', is_active: true },
+        { id: 'u4', thana_name: 'Kotwali Ayodhya', nic_email: 'sho-kotayodhya.ay@up.gov.in', cug_mobile: '9454403296', role: 'thana_user', is_active: true },
+        { id: 'u5', thana_name: 'Ram Janm Bhoomi', nic_email: 'sho-rjb.ay@up.gov.in', cug_mobile: '9454403310', role: 'thana_user', is_active: true },
+        { id: 'u_superadmin', thana_name: 'Cyber Cell HQ', nic_email: 'superadmin@up.nic.in', cug_mobile: '9999999999', role: 'super_admin', is_active: true }
       ]);
     } finally { setLoading(false); }
   };
@@ -176,6 +190,24 @@ export default function Dashboard() {
     const w = window.open('', '_blank');
     w.document.write(`<html><head><title>SafeStay Certificate</title><script src="https://cdn.tailwindcss.com"></script></head><body class="bg-slate-100 p-8 flex items-center justify-center min-h-screen"><div class="max-w-xl w-full bg-white border-4 border-double border-amber-600 rounded-3xl p-8 text-center space-y-6 shadow-2xl"><div class="text-amber-700 text-sm font-bold tracking-widest uppercase">Uttar Pradesh Police</div><h1 class="text-3xl font-black text-slate-900">SafeStay Verification Certificate</h1><hr class="border-slate-200"/><div class="text-2xl font-bold text-slate-800">${hotel.hotel_name}</div><div class="text-xs font-mono text-indigo-600 font-bold">Police Ref: ${hotel.police_verification}</div><div class="bg-slate-50 p-4 border border-slate-100 rounded-2xl inline-block"><div class="text-xs text-slate-400 font-bold uppercase tracking-wider mb-2">Verified Official Domain</div><div class="text-base font-extrabold text-emerald-600">${hotel.official_url}</div></div><div class="text-[10px] text-slate-400 font-bold">Issued: ${new Date().toLocaleDateString('en-IN')} • Ayodhya Cyber Cell</div><button onclick="window.print()" class="mt-4 px-6 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold">Print Certificate</button></div></body></html>`);
     w.document.close();
+  };
+
+  const toggleUserStatus = async (user) => {
+    const newStatus = !user.is_active;
+    try {
+      const { error } = await supabase
+        .from('system_users')
+        .update({ is_active: newStatus })
+        .eq('id', user.id);
+
+      if (error) throw error;
+      
+      setSystemUsers(prev => prev.map(u => u.id === user.id ? { ...u, is_active: newStatus } : u));
+    } catch (err) {
+      console.error('Failed to update user status:', err);
+      // Fallback
+      setSystemUsers(prev => prev.map(u => u.id === user.id ? { ...u, is_active: newStatus } : u));
+    }
   };
 
   // ── Role badge for sidebar ─────────────────────────────────────────────────
@@ -257,6 +289,7 @@ export default function Dashboard() {
             {visibleTabs.filter(t => t.group === 'admin').map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
+              const count = counts[tab.id];
               return (
                 <button
                   key={tab.id}
@@ -273,6 +306,13 @@ export default function Dashboard() {
                     isActive ? 'text-orange-600' : 'text-orange-200/60 group-hover:text-white'
                   }`} />
                   <span className="flex-1 text-left text-xs">{tab.label}</span>
+                  {count !== undefined && (
+                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
+                      isActive ? 'bg-orange-100 text-orange-700' : 'bg-white/20 text-white/70'
+                    }`}>
+                      {count}
+                    </span>
+                  )}
                 </button>
               );
             })}
@@ -733,34 +773,106 @@ export default function Dashboard() {
             </div>
           )}
 
-          {/* MANAGE USERS TAB (super_admin only) */}
-          {activeTab === 'users' && (
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-              <div className="p-5 border-b border-slate-100 flex items-center justify-between">
-                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Manage System Users</h3>
-                <span className="text-[10px] bg-amber-50 text-amber-700 px-2.5 py-1 rounded-full font-bold border border-amber-100">Super Admin Only</span>
-              </div>
-              <div className="p-8 text-center text-slate-400 font-semibold space-y-3">
-                <div className="w-14 h-14 mx-auto rounded-2xl bg-amber-50 flex items-center justify-center">
-                  <UserCog className="w-7 h-7 text-amber-400" />
+          {/* VIEW USERS TAB */}
+          {activeTab === 'users' && (() => {
+            const filteredUsers = systemUsers.filter(u => {
+              const q = userSearchQuery.toLowerCase();
+              return (
+                (u.thana_name || '').toLowerCase().includes(q) ||
+                (u.nic_email || '').toLowerCase().includes(q) ||
+                (u.cug_mobile || '').toLowerCase().includes(q) ||
+                (u.role || '').toLowerCase().includes(q)
+              );
+            });
+            return (
+              <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden animate-in fade-in duration-200">
+                <div className="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div>
+                    <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">System Users Directory</h3>
+                    <p className="text-[11px] text-slate-400 font-semibold mt-0.5">Manage and audit administrative police accounts</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="text"
+                      placeholder="Search name, email, CUG..."
+                      value={userSearchQuery}
+                      onChange={(e) => setUserSearchQuery(e.target.value)}
+                      className="appearance-none bg-slate-50 border border-slate-200 text-slate-700 py-1.5 px-3 rounded-lg text-xs font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/20 w-full sm:w-64"
+                    />
+                  </div>
                 </div>
-                <p className="text-sm font-bold text-slate-700">User Management Panel</p>
-                <p className="text-xs text-slate-400 max-w-xs mx-auto">Add, remove, and manage Thana officer accounts. Assign roles: super_admin, admin, or thana_user.</p>
-                <div className="grid grid-cols-3 gap-3 mt-4 text-left max-w-md mx-auto">
-                  {[
-                    { role: 'Super Admin', color: 'bg-amber-50 border-amber-200 text-amber-700', desc: 'Full system access' },
-                    { role: 'Administrator', color: 'bg-indigo-50 border-indigo-200 text-indigo-700', desc: 'Dashboard + settings' },
-                    { role: 'Police Officer', color: 'bg-emerald-50 border-emerald-200 text-emerald-700', desc: 'View & report only' },
-                  ].map(r => (
-                    <div key={r.role} className={`p-3 rounded-xl border ${r.color} text-center`}>
-                      <p className="text-[10px] font-black uppercase tracking-wide">{r.role}</p>
-                      <p className="text-[9px] mt-1 opacity-75">{r.desc}</p>
-                    </div>
-                  ))}
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead className="bg-slate-50 text-[10px] text-slate-500 uppercase tracking-wider font-bold border-b border-slate-100">
+                      <tr>
+                        <th className="p-4">Jurisdiction / Thana</th>
+                        <th className="p-4">Official Email ID</th>
+                        <th className="p-4">CUG Mobile</th>
+                        <th className="p-4">Role</th>
+                        <th className="p-4 text-center">Status</th>
+                        <th className="p-4 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredUsers.length === 0 ? (
+                        <tr>
+                          <td colSpan={6} className="p-8 text-center text-slate-400 font-semibold">
+                            No users found matching your search query.
+                          </td>
+                        </tr>
+                      ) : (
+                        filteredUsers.map(user => (
+                          <tr key={user.id} className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors font-medium text-slate-700">
+                            <td className="p-4 font-bold text-slate-800 text-sm">{user.thana_name}</td>
+                            <td className="p-4 font-mono font-bold text-slate-600 select-all">{user.nic_email}</td>
+                            <td className="p-4 font-mono text-slate-500">{user.cug_mobile || 'N/A'}</td>
+                            <td className="p-4">
+                              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                                user.role === 'super_admin' ? 'bg-amber-50 text-amber-700 border border-amber-100' :
+                                user.role === 'admin' ? 'bg-indigo-50 text-indigo-700 border border-indigo-100' :
+                                'bg-emerald-50 text-emerald-700 border border-emerald-100'
+                              }`}>
+                                {user.role === 'super_admin' ? 'Super Admin' :
+                                 user.role === 'admin' ? 'Admin' : 'Police Officer'}
+                              </span>
+                            </td>
+                            <td className="p-4">
+                              <div className="flex justify-center">
+                                <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${
+                                  user.is_active 
+                                    ? 'bg-emerald-50 text-emerald-700 border-emerald-100' 
+                                    : 'bg-rose-50 text-rose-700 border-rose-100'
+                                }`}>
+                                  <span className={`w-1.5 h-1.5 rounded-full ${user.is_active ? 'bg-emerald-500' : 'bg-rose-500'}`} />
+                                  {user.is_active ? 'Active' : 'Deactivated'}
+                                </span>
+                              </div>
+                            </td>
+                            <td className="p-4">
+                              <div className="flex justify-end">
+                                <button
+                                  onClick={() => toggleUserStatus(user)}
+                                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-500/20 ${
+                                    user.is_active ? 'bg-emerald-500' : 'bg-slate-300'
+                                  }`}
+                                >
+                                  <span
+                                    className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                                      user.is_active ? 'translate-x-4' : 'translate-x-0'
+                                  }`}
+                                  />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
                 </div>
               </div>
-            </div>
-          )}
+            );
+          })()}
 
           {/* SYSTEM SETTINGS TAB (admin + super_admin) */}
           {activeTab === 'settings' && (
