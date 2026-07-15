@@ -74,3 +74,10 @@ A comprehensive, highly secure web application built for the Uttar Pradesh Polic
 - Rendered user records in a clean table layout listing Thana jurisdiction, official email address, CUG mobile number, role scopes, and status.
 - Added an interactive **activate/deactivate pill toggle switch** for each user that updates the account's active status dynamically.
 - Implemented a real-time **search input filter** enabling administrators to quickly search users by name (Thana), email ID, and CUG mobile numbers.
+
+### 7. User Password Reset Utility in System Settings
+- Added a new **Reset User Password** form panel inside the **System Settings** view (visible to `admin` and `super_admin` accounts).
+- Provides a dynamic dropdown list showing all verified system users (e.g. Kotwali Nagar, Cyber Thana, Kotwali Cantt, etc.) along with their official email addresses.
+- Created a POST endpoint `/api/analytics/reset-password` on the backend that handles resetting passwords in Supabase Auth using the service role admin API (`supabase.auth.admin.updateUserById`).
+- Integrates local override credentials caching (`localStorage.setItem('safestay_reset_passwords', ...)`) to ensure the password reset is instantly testable and fully functional even when running in offline/local mock bypass mode.
+- Sanitized password input controls, adding visual validation states, loading indicators, and clean warning/success prompts.
