@@ -6,7 +6,7 @@ import {
 } from 'recharts';
 import {
   ShieldAlert, ShieldCheck, Building2, Globe, Send, AlertTriangle, ChevronDown, CheckCircle2,
-  FileText, QrCode, ClipboardList, CheckCircle, RefreshCw, Eye, ExternalLink, Download, LogOut,
+  FileText, QrCode, ClipboardList, CheckCircle, RefreshCw, Eye, EyeOff, ExternalLink, Download, LogOut,
   Users, MapPin, Clock, Monitor, Activity, ChevronRight, Menu, X, Shield, Settings, UserCog
 } from 'lucide-react';
 import supabase from '../services/supabaseClient';
@@ -110,6 +110,7 @@ export default function Dashboard() {
   const [resetFormLoading, setResetFormLoading] = useState(false);
   const [resetSuccess, setResetSuccess] = useState(null);
   const [resetError, setResetError] = useState(null);
+  const [showResetPassword, setShowResetPassword] = useState(false);
   const [profileName, setProfileName] = useState('');
   const [profileMobile, setProfileMobile] = useState('');
   const [profileSuccess, setProfileSuccess] = useState(null);
@@ -1196,14 +1197,23 @@ export default function Dashboard() {
                           
                           <div className="space-y-1.5">
                             <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">New Password</label>
-                            <input
-                              type="password"
-                              required
-                              placeholder="••••••••"
-                              value={resetPassword}
-                              onChange={e => setResetPassword(e.target.value)}
-                              className="w-full bg-white border border-slate-200 text-slate-700 py-2 px-3 rounded-lg text-xs font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
-                            />
+                            <div className="relative">
+                              <input
+                                type={showResetPassword ? "text" : "password"}
+                                required
+                                placeholder="••••••••"
+                                value={resetPassword}
+                                onChange={e => setResetPassword(e.target.value)}
+                                className="w-full bg-white border border-slate-200 text-slate-700 py-2 pl-3 pr-10 rounded-lg text-xs font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => setShowResetPassword(!showResetPassword)}
+                                className="absolute right-3 top-2 text-slate-400 hover:text-slate-600 transition-colors focus:outline-none cursor-pointer"
+                              >
+                                {showResetPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                              </button>
+                            </div>
                           </div>
                         </div>
 
