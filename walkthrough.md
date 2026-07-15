@@ -110,5 +110,12 @@ A comprehensive, highly secure web application built for the Uttar Pradesh Polic
 
 ### 12. Suspicious Mobile / WhatsApp Input on Public Report Form
 - Updated the public citizen portal [Home.jsx](file:///e:/SUPER%20250%20PROJECT/Spear_Phishing_Firewall/Spear-Phishing-Firewall/frontend/src/pages/Home.jsx) to add a **"Suspicious Mobile / WhatsApp"** input text field in the *Report Suspicious Website* modal form.
-- Allows visitors to optionally report the fraudster's sender phone or WhatsApp number alongside the fraudulent domain link.
 - Appends the reported phone details cleanly inside the database `description` field parameter before calling the public backend API `/api/mobile/report`. This displays the reported number inside the police cell's Public Reports panel without causing Supabase DB schema column errors.
+
+### 13. Pagination (Paging) on Visitor Logs Dashboard
+- Configured dynamic client-side **pagination** inside the **Visitor Activity Log** registry.
+- Breaks down the session logs into pages showing **5 visitor sessions per page**, matching the layout architecture of the main system users registry.
+- Implemented premium pagination controls at the bottom of the table, including:
+  - Previous and Next directional buttons.
+  - Interactive page number indicators.
+  - Active page index resets automatically back to Page 1 whenever the time scope filters (`dateRange`) are updated.
