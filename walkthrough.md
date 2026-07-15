@@ -87,3 +87,9 @@ A comprehensive, highly secure web application built for the Uttar Pradesh Polic
 - Breaks down the police accounts list to display a clean limit of **5 users per page**, enhancing layout readability and preventing screen-overflow.
 - Created beautiful pagination controls at the bottom of the table, including Previous and Next directional buttons and interactive page number indicators.
 - Added dynamic search page resetting; any text entry in the search input box automatically resets the current active page pointer to page 1 so that searches always start from the initial page index.
+
+### 9. Dynamic Entries Per Page Selector
+- Added a **"Show [5 | 10 | 20 | 50 | All] entries"** selector dropdown at the top of the View Users table.
+- Selecting a page size dynamically limits the number of visible rows on the screen.
+- Selecting **"All"** displays all system users in a single scrollable viewport.
+- Any change to the entries-per-page setting automatically resets the active page index to Page 1 to ensure a consistent navigation state.
