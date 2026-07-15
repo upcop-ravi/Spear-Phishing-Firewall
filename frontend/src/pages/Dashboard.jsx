@@ -104,6 +104,7 @@ export default function Dashboard() {
   const [systemUsers,    setSystemUsers]      = useState([]);
   const [userSearchQuery, setUserSearchQuery] = useState('');
   const [userPage,        setUserPage]        = useState(1);
+  const [userPageSize,    setUserPageSize]    = useState(5);
   const [resetEmail, setResetEmail] = useState('');
   const [resetPassword, setResetPassword] = useState('');
   const [resetFormLoading, setResetFormLoading] = useState(false);
@@ -834,7 +835,7 @@ export default function Dashboard() {
               );
             });
 
-            const ITEMS_PER_PAGE = 5;
+            const ITEMS_PER_PAGE = userPageSize;
             const totalItems = filteredUsers.length;
             const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
             const currentPage = Math.min(userPage, totalPages);
@@ -848,7 +849,27 @@ export default function Dashboard() {
                     <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">System Users Directory</h3>
                     <p className="text-[11px] text-slate-400 font-semibold mt-0.5">Manage and audit administrative police accounts</p>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex flex-wrap items-center gap-4">
+                    {/* Page Size Selector */}
+                    <div className="flex items-center gap-1.5 text-xs text-slate-500 font-semibold">
+                      <span>Show</span>
+                      <select
+                        value={userPageSize}
+                        onChange={(e) => {
+                          setUserPageSize(Number(e.target.value));
+                          setUserPage(1);
+                        }}
+                        className="bg-slate-50 border border-slate-200 text-slate-700 py-1 px-2 rounded-lg text-[11px] font-bold focus:outline-none cursor-pointer"
+                      >
+                        <option value={5}>5</option>
+                        <option value={10}>10</option>
+                        <option value={20}>20</option>
+                        <option value={50}>50</option>
+                        <option value={999999}>All</option>
+                      </select>
+                      <span>entries</span>
+                    </div>
+
                     <input
                       type="text"
                       placeholder="Search name, email, CUG..."
