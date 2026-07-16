@@ -140,3 +140,11 @@ A comprehensive, highly secure web application built for the Uttar Pradesh Polic
 - **Persistence:** Appends the generated ticket ID to the `police_verification` column inside the `verified_hotels` database table in a parsing-friendly metadata format (`[TICKET:TKT-...]`).
 - **Success Screen:** Displays a highlighted Ticket ID card with a clipboard utility and a quick-track action button that immediately redirects the hotelier to the lookup tab to track status.
 - **Lookup Parsing:** Decodes the database value to display the original PVR reference ID and the computed Application Ticket ID separately.
+
+### 17. Property Verification Queue Tab on Admin/Police Dashboard
+- Created a new **Property Verification** tab on the administrator dashboard [Dashboard.jsx](file:///e:/SUPER%20250%20PROJECT/Spear_Phishing_Firewall/Spear-Phishing-Firewall/frontend/src/pages/Dashboard.jsx) (visible to `super_admin`, `admin`, and `thana_user`).
+- **Role-Based Filtration:**
+  - `super_admin` / `admin`: View all pending hotel/property registration requests.
+  - `thana_user` (police officer): View pending requests only within their respective thana/jurisdiction.
+- **Actions:** Officers can **Approve** (activates domain trust and prints official certificates) or **Reject** (suspends registration request) applications directly.
+- Parses and displays PVR reference codes and generated Ticket IDs separately inside the pending requests table.
