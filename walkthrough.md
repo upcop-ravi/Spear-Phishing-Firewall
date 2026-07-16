@@ -132,3 +132,11 @@ A comprehensive, highly secure web application built for the Uttar Pradesh Polic
   2. **Check Property Verification Status**: Renders a new search/lookup panel.
 - Allows hoteliers to enter their **GST Number**, **Official Email**, or **Verification Reference Code** to search for verification status.
 - Displays responsive status cards detailing registration parameters and police verification state pills (e.g. *Active*, *Pending Verification*).
+
+### 16. Algorithmic Ticket ID Generation Upon Property Submission
+- Implemented a formula-based **Ticket ID** generator inside [Register.jsx](file:///e:/SUPER%20250%20PROJECT/Spear_Phishing_Firewall/Spear-Phishing-Firewall/frontend/src/pages/Register.jsx) that executes on final form submission.
+- **Ticket ID Formula:**
+  `TKT-{GST_first_4_chars}-{PVR_first_4_chars}-{Mobile_last_4_digits}-{Thana_first_3_letters}-{Current_Year}-{04_digit_serial}`
+- **Persistence:** Appends the generated ticket ID to the `police_verification` column inside the `verified_hotels` database table in a parsing-friendly metadata format (`[TICKET:TKT-...]`).
+- **Success Screen:** Displays a highlighted Ticket ID card with a clipboard utility and a quick-track action button that immediately redirects the hotelier to the lookup tab to track status.
+- **Lookup Parsing:** Decodes the database value to display the original PVR reference ID and the computed Application Ticket ID separately.
