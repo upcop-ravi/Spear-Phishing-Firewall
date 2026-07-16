@@ -148,3 +148,9 @@ A comprehensive, highly secure web application built for the Uttar Pradesh Polic
   - `thana_user` (police officer): View pending requests only within their respective thana/jurisdiction.
 - **Actions:** Officers can **Approve** (activates domain trust and prints official certificates) or **Reject** (suspends registration request) applications directly.
 - Parses and displays PVR reference codes and generated Ticket IDs separately inside the pending requests table.
+
+### 18. Exposing Complete Property Registration Fields & Verification Authority to Admins
+- Redesigned the table layout in the **Property Verification** tab inside [Dashboard.jsx](file:///e:/SUPER%20250%20PROJECT/Spear_Phishing_Firewall/Spear-Phishing-Firewall/frontend/src/pages/Dashboard.jsx) to ensure all registered property details are visible:
+  - **Verification Authority:** Explicitly resolves and renders the designated police station name (e.g. `Kotwali Nagar`) in its own high-visibility column.
+  - **Applied On Date:** Formats and displays the application submission timestamp (`created_at`).
+  - **Property Metadata details:** Property Name, official URL link, email/WhatsApp details, and GST/PVR registry information are cleanly partitioned into logical columns.
