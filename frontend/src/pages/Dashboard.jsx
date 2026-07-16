@@ -19,6 +19,7 @@ const ALL_TABS = [
   { id: 'analytics',  label: 'Analytics View',      icon: RefreshCw,    roles: ['super_admin', 'admin', 'thana_user'], group: 'main', desc: 'Visual summary of cyber threat stats, active cases, and domain takedowns' },
   { id: 'threats',    label: 'Cyber Threats',        icon: ShieldAlert,  roles: ['super_admin', 'admin', 'thana_user'], group: 'main', desc: 'List of fraudulent URLs, registrar WHOIS lookups, and takedown status' },
   { id: 'properties', label: 'Registered Properties',icon: Building2,    roles: ['super_admin', 'admin', 'thana_user'], group: 'main', desc: 'Registry of certified hotels and their verified booking domains' },
+  { id: 'verification', label: 'Property Verification', icon: ShieldCheck, roles: ['super_admin', 'admin', 'thana_user'], group: 'main', desc: 'Verify and approve pending hotel/property registration applications' },
   { id: 'reports',    label: 'Public Reports',       icon: ClipboardList,roles: ['super_admin', 'admin', 'thana_user'], group: 'main', desc: 'Citizen reported suspicious links awaiting Cyber Cell action' },
   { id: 'visitors',   label: 'Visitor Logs',         icon: Users,        roles: ['super_admin', 'admin'],               group: 'main', desc: 'Audited system interactions and portal access records' },
   { id: 'users',      label: 'View Users',           icon: Users,        roles: ['super_admin', 'admin'],               group: 'admin', desc: 'Search and activate/deactivate police CUG accounts' },
@@ -54,20 +55,31 @@ export default function Dashboard() {
       try {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
-          setCurrentUser(user);
           const { data: profile } = await supabase
             .from('system_users')
-            .select('role, thana_name')
+            .select('id, role, thana_name, cug_mobile')
             .eq('id', user.id)
             .maybeSingle();
-          if (profile?.role) setUserRole(profile.role);
+          if (profile) {
+            setCurrentUser({
+              id: profile.id,
+              email: user.email,
+              cug_mobile: profile.cug_mobile,
+              user_metadata: { thana_name: profile.thana_name }
+            });
+            if (profile.role) setUserRole(profile.role);
+          } else {
+            setCurrentUser(user);
+          }
         } else {
           // Fallback to local auth_user if supabase has no session
           const localUserStr = localStorage.getItem('auth_user');
           if (localUserStr) {
             const localUser = JSON.parse(localUserStr);
             setCurrentUser({
+              id: localUser.id || localUser.uid,
               email: localUser.email,
+              cug_mobile: localUser.cug_mobile,
               user_metadata: { thana_name: localUser.thana_name }
             });
             if (localUser.role) setUserRole(localUser.role);
@@ -79,7 +91,9 @@ export default function Dashboard() {
         if (localUserStr) {
           const localUser = JSON.parse(localUserStr);
           setCurrentUser({
+            id: localUser.id || localUser.uid,
             email: localUser.email,
+            cug_mobile: localUser.cug_mobile,
             user_metadata: { thana_name: localUser.thana_name }
           });
           if (localUser.role) setUserRole(localUser.role);
@@ -127,11 +141,12 @@ export default function Dashboard() {
   }, [currentUser]);
 
   const counts = {
-    threats:    suspiciousLinks.length,
-    properties: verifiedHotels.length,
-    reports:    publicReports.length,
-    visitors:   visitorLogs.length,
-    users:      systemUsers.length,
+    threats:      suspiciousLinks.length,
+    properties:   verifiedHotels.filter(h => h.status === 'Active' || h.status === 'Verified').length,
+    verification: verifiedHotels.filter(h => h.status === 'Pending Verification' || h.status === 'Pending').length,
+    reports:      publicReports.length,
+    visitors:     visitorLogs.length,
+    users:        systemUsers.length,
   };
 
   // ── Fetch data ─────────────────────────────────────────────────────────────
@@ -211,10 +226,45 @@ export default function Dashboard() {
     win.document.close();
   };
 
+  const parseVerification = (val) => {
+    if (!val) return { pvr: 'N/A', ticket: 'N/A' };
+    const match = val.match(/^(.*?)\s+\[TICKET:(.*?)\]$/);
+    if (match) {
+      return { pvr: match[1], ticket: match[2] };
+    }
+    return { pvr: val, ticket: 'N/A' };
+  };
+
+  const getThanaName = (thanaId) => {
+    const u = systemUsers.find(u => u.id === thanaId);
+    return u ? u.thana_name : 'Unknown Station';
+  };
+
   const generateQrCertificate = (hotel) => {
     const w = window.open('', '_blank');
-    w.document.write(`<html><head><title>SafeStay Certificate</title><script src="https://cdn.tailwindcss.com"></script></head><body class="bg-slate-100 p-8 flex items-center justify-center min-h-screen"><div class="max-w-xl w-full bg-white border-4 border-double border-amber-600 rounded-3xl p-8 text-center space-y-6 shadow-2xl"><div class="text-amber-700 text-sm font-bold tracking-widest uppercase">Uttar Pradesh Police</div><h1 class="text-3xl font-black text-slate-900">SafeStay Verification Certificate</h1><hr class="border-slate-200"/><div class="text-2xl font-bold text-slate-800">${hotel.hotel_name}</div><div class="text-xs font-mono text-indigo-600 font-bold">Police Ref: ${hotel.police_verification}</div><div class="bg-slate-50 p-4 border border-slate-100 rounded-2xl inline-block"><div class="text-xs text-slate-400 font-bold uppercase tracking-wider mb-2">Verified Official Domain</div><div class="text-base font-extrabold text-emerald-600">${hotel.official_url}</div></div><div class="text-[10px] text-slate-400 font-bold">Issued: ${new Date().toLocaleDateString('en-IN')} • Ayodhya Cyber Cell</div><button onclick="window.print()" class="mt-4 px-6 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold">Print Certificate</button></div></body></html>`);
+    const cleanPvr = parseVerification(hotel.police_verification).pvr;
+    w.document.write(`<html><head><title>SafeStay Certificate</title><script src="https://cdn.tailwindcss.com"></script></head><body class="bg-slate-100 p-8 flex items-center justify-center min-h-screen"><div class="max-w-xl w-full bg-white border-4 border-double border-amber-600 rounded-3xl p-8 text-center space-y-6 shadow-2xl"><div class="text-amber-700 text-sm font-bold tracking-widest uppercase">Uttar Pradesh Police</div><h1 class="text-3xl font-black text-slate-900">SafeStay Verification Certificate</h1><hr class="border-slate-200"/><div class="text-2xl font-bold text-slate-800">${hotel.hotel_name}</div><div class="text-xs font-mono text-indigo-600 font-bold">Police Ref: ${cleanPvr}</div><div class="bg-slate-50 p-4 border border-slate-100 rounded-2xl inline-block"><div class="text-xs text-slate-400 font-bold uppercase tracking-wider mb-2">Verified Official Domain</div><div class="text-base font-extrabold text-emerald-600">${hotel.official_url}</div></div><div class="text-[10px] text-slate-400 font-bold">Issued: ${new Date().toLocaleDateString('en-IN')} • Ayodhya Cyber Cell</div><button onclick="window.print()" class="mt-4 px-6 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold">Print Certificate</button></div></body></html>`);
     w.document.close();
+  };
+
+  const handleVerifyHotel = async (hotelId, action) => {
+    const nextStatus = action === 'approve' ? 'Active' : 'Suspended';
+    try {
+      const { error } = await supabase
+        .from('verified_hotels')
+        .update({ status: nextStatus })
+        .eq('id', hotelId);
+
+      if (error) throw error;
+      
+      setVerifiedHotels(prev => prev.map(h => h.id === hotelId ? { ...h, status: nextStatus } : h));
+      alert(`Property status updated to ${nextStatus} successfully!`);
+    } catch (err) {
+      console.error('Failed to update property status:', err);
+      // fallback mock update
+      setVerifiedHotels(prev => prev.map(h => h.id === hotelId ? { ...h, status: nextStatus } : h));
+      alert(`Property status updated locally to ${nextStatus} (offline fallback).`);
+    }
   };
 
   const toggleUserStatus = async (user) => {
@@ -714,7 +764,10 @@ export default function Dashboard() {
                         </td>
                         <td className="p-4 space-y-0.5">
                           <span className="block font-mono uppercase font-bold text-slate-700">GST: {hotel.gst_number}</span>
-                          <span className="text-[10px] font-mono text-slate-400 font-semibold block">{hotel.police_verification}</span>
+                          <span className="text-[10px] font-mono text-slate-400 font-semibold block">PVR: {parseVerification(hotel.police_verification).pvr}</span>
+                          {parseVerification(hotel.police_verification).ticket !== 'N/A' && (
+                            <span className="text-[9px] font-mono text-indigo-500 font-bold block">TKT: {parseVerification(hotel.police_verification).ticket}</span>
+                          )}
                         </td>
                         <td className="p-4 text-right">
                           <button 
@@ -728,6 +781,94 @@ export default function Dashboard() {
                         </td>
                       </tr>
                     ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* PROPERTY VERIFICATION TAB */}
+          {activeTab === 'verification' && (
+            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+              <div className="p-5 border-b border-slate-100 flex items-center justify-between">
+                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Pending Property Verification Queue</h3>
+                <span className="text-[10px] bg-amber-50 text-amber-700 px-2.5 py-1 rounded-full font-bold">Awaiting Audit Check</span>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-slate-50 text-[10px] text-slate-500 uppercase tracking-wider font-bold border-b border-slate-100">
+                    <tr>
+                      <th className="p-4">Hotel Details</th>
+                      <th className="p-4">Official Domain</th>
+                      <th className="p-4">Contact</th>
+                      <th className="p-4">GST / PVR Ref</th>
+                      <th className="p-4">Ticket ID</th>
+                      <th className="p-4 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {(() => {
+                      const pendingHotels = verifiedHotels.filter(hotel => {
+                        const isPending = hotel.status === 'Pending Verification' || hotel.status === 'Pending';
+                        if (!isPending) return false;
+                        if (userRole === 'thana_user') {
+                          return hotel.thana_id === currentUser?.id;
+                        }
+                        return true;
+                      });
+
+                      if (pendingHotels.length === 0) {
+                        return (
+                          <tr>
+                            <td colSpan={6} className="p-8 text-center text-slate-400 font-semibold">
+                              No pending verification requests found.
+                            </td>
+                          </tr>
+                        );
+                      }
+
+                      return pendingHotels.map(hotel => {
+                        const parsed = parseVerification(hotel.police_verification);
+                        return (
+                          <tr key={hotel.id} className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors font-medium text-slate-700">
+                            <td className="p-4">
+                              <span className="font-bold text-slate-800 text-sm block">{hotel.hotel_name}</span>
+                              <span className="text-[10px] text-slate-400 block font-semibold">{getThanaName(hotel.thana_id)}</span>
+                            </td>
+                            <td className="p-4 font-mono font-bold text-indigo-600">
+                              <a href={hotel.official_url} target="_blank" rel="noopener noreferrer" className="hover:underline flex items-center gap-0.5">
+                                {hotel.official_url} <ExternalLink className="w-3.5 h-3.5 text-slate-400 inline" />
+                              </a>
+                            </td>
+                            <td className="p-4 space-y-0.5">
+                              <span className="block font-bold text-slate-800">{hotel.email}</span>
+                              <span className="text-[10px] text-slate-400 block font-semibold">{hotel.whatsapp_number}</span>
+                            </td>
+                            <td className="p-4 space-y-0.5">
+                              <span className="block font-mono uppercase font-bold text-slate-700">GST: {hotel.gst_number}</span>
+                              <span className="text-[10px] font-mono text-slate-400 font-semibold block">PVR: {parsed.pvr}</span>
+                            </td>
+                            <td className="p-4">
+                              <span className="font-mono text-indigo-600 font-bold bg-indigo-50 px-1.5 py-0.5 rounded text-[10px]">{parsed.ticket}</span>
+                            </td>
+                            <td className="p-4 text-right space-x-1.5 whitespace-nowrap">
+                              <button 
+                                onClick={() => handleVerifyHotel(hotel.id, 'approve')} 
+                                className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-lg text-xs font-bold transition-all cursor-pointer shadow-sm"
+                              >
+                                <ShieldCheck className="w-3.5 h-3.5" /> Approve
+                              </button>
+                              <button 
+                                onClick={() => handleVerifyHotel(hotel.id, 'reject')} 
+                                className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-lg text-xs font-bold transition-all cursor-pointer shadow-sm"
+                              >
+                                <AlertTriangle className="w-3.5 h-3.5" /> Reject
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      });
+                    })()}
                   </tbody>
                 </table>
               </div>
