@@ -125,3 +125,10 @@ A comprehensive, highly secure web application built for the Uttar Pradesh Polic
 - Selecting an option dynamically limits the visible table rows shown on the screen.
 - Selecting **"All"** displays all visitor logs on a single scrollable viewport.
 - Any change to the selector automatically resets the active page index to Page 1.
+
+### 15. Twin Tabs for Property Registration & Status Verification Lookup
+- Redesigned the register property page [Register.jsx](file:///e:/SUPER%20250%20PROJECT/Spear_Phishing_Firewall/Spear-Phishing-Firewall/frontend/src/pages/Register.jsx) to support twin tab navigation:
+  1. **Property Registration Application**: Renders the original official application submission form.
+  2. **Check Property Verification Status**: Renders a new search/lookup panel.
+- Allows hoteliers to enter their **GST Number**, **Official Email**, or **Verification Reference Code** to search for verification status.
+- Displays responsive status cards detailing registration parameters and police verification state pills (e.g. *Active*, *Pending Verification*).
