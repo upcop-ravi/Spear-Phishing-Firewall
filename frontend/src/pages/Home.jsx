@@ -202,7 +202,7 @@ export default function Home() {
 
     let finalDesc = description;
     if (suspiciousMobile.trim()) {
-      finalDesc = `${description}\n\n[Suspicious Mobile/WhatsApp: ${suspiciousMobile}]`;
+      finalDesc = `${description}\n\n[Suspect Mobile/WhatsApp: ${suspiciousMobile}]`;
     }
 
     try {
@@ -416,12 +416,12 @@ export default function Home() {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Suspicious Mobile / WhatsApp</label>
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Suspect Mobile / WhatsApp</label>
                   <input
                     type="text"
                     value={suspiciousMobile}
                     onChange={(e) => setSuspiciousMobile(e.target.value)}
-                    placeholder="Enter suspicious mobile or WhatsApp number (Optional)"
+                    placeholder="Enter suspect mobile or WhatsApp number (Optional)"
                     className="w-full p-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 text-sm bg-slate-50"
                   />
                 </div>
