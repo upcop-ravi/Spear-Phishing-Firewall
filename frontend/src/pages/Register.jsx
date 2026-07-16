@@ -30,6 +30,16 @@ export default function Register() {
   const [statusResult, setStatusResult] = useState(null);
   const [statusError, setStatusError] = useState(null);
   const [statusLoading, setStatusLoading] = useState(false);
+  const [generatedTicketId, setGeneratedTicketId] = useState('');
+
+  const parseVerification = (val) => {
+    if (!val) return { pvr: 'N/A', ticket: 'N/A' };
+    const match = val.match(/^(.*?)\s+\[TICKET:(.*?)\]$/);
+    if (match) {
+      return { pvr: match[1], ticket: match[2] };
+    }
+    return { pvr: val, ticket: 'N/A' };
+  };
 
   const handleCheckStatus = async (e) => {
     e.preventDefault();
@@ -105,6 +115,38 @@ export default function Register() {
     logVisitorAction('Submitted registration for property: ' + hotelName);
 
     try {
+      // Get the next serial number by counting existing entries
+      let nextSerial = 1;
+      try {
+        const { count, error: countErr } = await supabase
+          .from('verified_hotels')
+          .select('id', { count: 'exact', head: true });
+        if (!countErr && count !== null) {
+          nextSerial = count + 1;
+        } else {
+          nextSerial = Math.floor(1000 + Math.random() * 9000);
+        }
+      } catch (err) {
+        nextSerial = Math.floor(1000 + Math.random() * 9000);
+      }
+
+      // Generate Ticket ID using formula:
+      // apply on the gst no, police pvr no, mobile no, and police station name followed by year and 04 digit serial no.
+      const stationName = thanas.find(t => t.id === thanaId)?.name || 'Ayodhya';
+      const gstClean = (gstNumber || '').replace(/[^A-Z0-9]/gi, '').toUpperCase().substring(0, 4).padEnd(4, 'X');
+      const pvrClean = (policeVerification || '').replace(/[^A-Z0-9]/gi, '').toUpperCase().substring(0, 4).padEnd(4, 'X');
+      const mobClean = (whatsappNumber || '').replace(/[^0-9]/g, '');
+      const mobLast4 = mobClean.substring(Math.max(0, mobClean.length - 4)).padStart(4, '0');
+      const stationClean = stationName.replace(/[^A-Z]/gi, '').toUpperCase().substring(0, 3).padEnd(3, 'STN');
+      const year = new Date().getFullYear();
+      const serialStr = String(nextSerial).padStart(4, '0');
+
+      const ticketId = `TKT-${gstClean}-${pvrClean}-${mobLast4}-${stationClean}-${year}-${serialStr}`;
+      setGeneratedTicketId(ticketId);
+
+      // Save police verification with appended Ticket ID
+      const fullVerification = `${policeVerification} [TICKET:${ticketId}]`;
+
       // Insert to verified_hotels via Supabase
       const { error } = await supabase
         .from('verified_hotels')
@@ -114,18 +156,14 @@ export default function Register() {
           email,
           whatsapp_number: whatsappNumber,
           gst_number: gstNumber,
-          police_verification: policeVerification,
+          police_verification: fullVerification,
           thana_id: thanaId,
           status: 'Pending Verification'
         }]);
 
-
       if (error) throw error;
 
       setSuccess(true);
-      setTimeout(() => {
-        navigate('/');
-      }, 3000);
 
     } catch (err) {
       console.error('Registration error:', err);
@@ -199,14 +237,49 @@ export default function Register() {
             )}
 
             {success ? (
-              <div className="p-6 text-center space-y-3">
+              <div className="p-6 text-center space-y-4 animate-in fade-in zoom-in duration-200">
                 <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
                   <ShieldCheck className="w-6 h-6" />
                 </div>
-                <h4 className="font-bold text-slate-900">Application Submitted</h4>
+                <h4 className="font-extrabold text-slate-900 text-lg">Application Submitted</h4>
+                
+                <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Your Generated Ticket ID</span>
+                  <span className="font-mono text-base font-black text-indigo-600 tracking-wider bg-white border border-slate-100 px-4 py-2 rounded-xl inline-block shadow-sm">
+                    {generatedTicketId}
+                  </span>
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(generatedTicketId);
+                      alert('Ticket ID copied to clipboard!');
+                    }}
+                    className="text-[10px] text-indigo-500 hover:text-indigo-700 font-bold block mx-auto underline cursor-pointer"
+                  >
+                    Copy Ticket ID
+                  </button>
+                </div>
+
                 <p className="text-xs text-slate-500 font-medium leading-relaxed">
                   Your property verification application has been sent to the designated police station. Once approved, your official booking page will receive UP Police SafeStay verification.
                 </p>
+
+                <button
+                  onClick={() => {
+                    setSuccess(false);
+                    setActiveRegTab('status');
+                    setSearchGst(generatedTicketId);
+                    // Trigger status lookup immediately
+                    setTimeout(() => {
+                      const mockEvent = { preventDefault: () => {} };
+                      // Simulating status lookup trigger
+                      const lookupBtn = document.getElementById('status-lookup-btn');
+                      if (lookupBtn) lookupBtn.click();
+                    }, 100);
+                  }}
+                  className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition-all cursor-pointer mt-2"
+                >
+                  Track Application Status
+                </button>
               </div>
             ) : (
               <form onSubmit={handleRegister} className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
@@ -321,13 +394,14 @@ export default function Register() {
                   <input
                     type="text"
                     required
-                    placeholder="Enter GST / Email / PV-XXXX-YYYY"
+                    placeholder="Enter GST / Email / Ticket ID / PV-XXXX"
                     value={searchGst}
                     onChange={(e) => setSearchGst(e.target.value)}
                     className="flex-grow p-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 text-sm bg-slate-50 font-semibold"
                   />
                   <button
                     type="submit"
+                    id="status-lookup-btn"
                     disabled={statusLoading}
                     className="px-5 py-3 bg-amber-600 hover:bg-amber-700 disabled:opacity-50 text-white rounded-xl text-xs font-bold transition-all shadow-md cursor-pointer"
                   >
@@ -346,6 +420,7 @@ export default function Register() {
             {statusResult && statusResult.map((prop, index) => {
               const thanaObj = thanas.find(th => th.id === prop.thana_id);
               const resolvedThana = thanaObj ? thanaObj.name : 'Ayodhya Cyber Cell Station';
+              const parsed = parseVerification(prop.police_verification);
               
               return (
                 <div key={index} className="p-5 rounded-2xl border border-slate-200 bg-slate-50/50 space-y-4 shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-200">
@@ -373,14 +448,18 @@ export default function Register() {
                       <span className="font-mono text-slate-800 font-bold uppercase">{prop.gst_number || 'N/A'}</span>
                     </div>
                     <div>
-                      <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider block">Verification ID</span>
-                      <span className="font-mono text-slate-800 font-bold bg-slate-100 px-1.5 py-0.5 rounded">{prop.police_verification || 'N/A'}</span>
+                      <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider block">PVR Reference ID</span>
+                      <span className="font-mono text-slate-800 font-bold bg-slate-100 px-1.5 py-0.5 rounded">{parsed.pvr}</span>
+                    </div>
+                    <div>
+                      <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider block">Application Ticket ID</span>
+                      <span className="font-mono text-indigo-600 font-bold bg-indigo-50 px-1.5 py-0.5 rounded">{parsed.ticket}</span>
                     </div>
                     <div>
                       <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider block">Jurisdiction Thana</span>
                       <span className="text-slate-800 font-bold">{resolvedThana}</span>
                     </div>
-                    <div>
+                    <div className="sm:col-span-2">
                       <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider block">Contact WhatsApp</span>
                       <span className="text-slate-800 font-bold">{prop.whatsapp_number || 'N/A'}</span>
                     </div>
