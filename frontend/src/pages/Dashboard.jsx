@@ -798,11 +798,13 @@ export default function Dashboard() {
                 <table className="w-full text-left text-xs">
                   <thead className="bg-slate-50 text-[10px] text-slate-500 uppercase tracking-wider font-bold border-b border-slate-100">
                     <tr>
-                      <th className="p-4">Hotel Details</th>
-                      <th className="p-4">Official Domain</th>
-                      <th className="p-4">Contact</th>
-                      <th className="p-4">GST / PVR Ref</th>
+                      <th className="p-4">Property Name</th>
+                      <th className="p-4">Official URL</th>
+                      <th className="p-4">Contact Details</th>
+                      <th className="p-4">GST / PVR Reference</th>
                       <th className="p-4">Ticket ID</th>
+                      <th className="p-4">Verification Authority</th>
+                      <th className="p-4">Applied On</th>
                       <th className="p-4 text-right">Actions</th>
                     </tr>
                   </thead>
@@ -820,7 +822,7 @@ export default function Dashboard() {
                       if (pendingHotels.length === 0) {
                         return (
                           <tr>
-                            <td colSpan={6} className="p-8 text-center text-slate-400 font-semibold">
+                            <td colSpan={8} className="p-8 text-center text-slate-400 font-semibold">
                               No pending verification requests found.
                             </td>
                           </tr>
@@ -830,10 +832,9 @@ export default function Dashboard() {
                       return pendingHotels.map(hotel => {
                         const parsed = parseVerification(hotel.police_verification);
                         return (
-                          <tr key={hotel.id} className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors font-medium text-slate-700">
+                          <tr key={hotel.id} className="border-b border-slate-100 hover:bg-slate-50/50 transition-colors font-medium text-slate-700 font-semibold">
                             <td className="p-4">
                               <span className="font-bold text-slate-800 text-sm block">{hotel.hotel_name}</span>
-                              <span className="text-[10px] text-slate-400 block font-semibold">{getThanaName(hotel.thana_id)}</span>
                             </td>
                             <td className="p-4 font-mono font-bold text-indigo-600">
                               <a href={hotel.official_url} target="_blank" rel="noopener noreferrer" className="hover:underline flex items-center gap-0.5">
@@ -850,6 +851,12 @@ export default function Dashboard() {
                             </td>
                             <td className="p-4">
                               <span className="font-mono text-indigo-600 font-bold bg-indigo-50 px-1.5 py-0.5 rounded text-[10px]">{parsed.ticket}</span>
+                            </td>
+                            <td className="p-4">
+                              <span className="font-bold text-slate-800 bg-slate-100 border border-slate-200/60 px-2.5 py-1 rounded-lg inline-block text-[11px]">{getThanaName(hotel.thana_id)}</span>
+                            </td>
+                            <td className="p-4 text-slate-500 font-mono text-[11px]">
+                              {hotel.created_at ? new Date(hotel.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : 'N/A'}
                             </td>
                             <td className="p-4 text-right space-x-1.5 whitespace-nowrap">
                               <button 
